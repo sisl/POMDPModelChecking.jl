@@ -8,7 +8,7 @@
 
 This package provide an interface between [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl) and [Storm](http://www.stormchecker.org/) model checking library. It allows to analyze MDP model using logical specifications.
 
-**Note:** This is mostly a julia wrapper around the python library `stormpy`.
+**Note:** This is mostly a julia wrapper around the python library [stormpy](https://moves-rwth.github.io/stormpy/).
 
 ## Usage
 
@@ -44,6 +44,11 @@ end
 
 labeling = label_grid_world(mdp)
 property = "Pmax=? [ (!\"bad\") U \"good\"]"  # follow stormpy syntax
+result = model_checking(mdp, labeling, property) # run model checker
+policy = Scheduler(mdp, result) # create a policy from the output of the model checker
+
+a = action(policy, GridWorldState(1,1))
+
 ```
 
 ## Notes on the supported models
