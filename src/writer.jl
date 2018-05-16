@@ -25,11 +25,10 @@ function write_mdp_transition(mdp::MDP, filename::String="mdp.tra")
             for a in actions
                 ai = action_index(mdp, a) - 1
                 d = transition(mdp, s, a)
-                for sp in states
+                for (sp, p) in weighted_iterator(d)
                     spi = state_index(mdp, sp) - 1
-                    prob = pdf(d, sp)
-                    prob == 0 ? continue : nothing
-                    line = string(si, " ", ai, " ", spi, " ", prob, "\n")
+                    p == 0.0 ? continue : nothing
+                    line = string(si, " ", ai, " ", spi, " ", p, "\n")
                     write(f, line)
                 end
             end
