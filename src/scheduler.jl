@@ -6,6 +6,7 @@ struct Scheduler{S, A} <: Policy
 end
 
 function Scheduler{S, A}(mdp::MDP{S, A}, result::ModelCheckingResult)
+    @assert result[:has_scheduler]
     py_scheduler = result.result[:scheduler]
     return Scheduler(mdp, py_scheduler)
 end

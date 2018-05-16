@@ -17,15 +17,21 @@ function model_checking{S}(mdp::MDP{S}, labeling::Dict{S, Vector{String}}, prope
     properties = stormpy.parse_properties(property)
     result = stormpy.model_checking(model, properties[1],  only_initial_states=false, extract_scheduler=true)
     @assert result[:result_for_all_states]
-    @assert result[:has_scheduler]
     return ModelCheckingResult(mdp, labeling, property, result)    
 end
 
+"""
+    parse an MDP model with Storm, if the specified transition and labels file do not exist it will write the files first
+"""
 function parse_mdp_model{S}(mdp::MDP{S}, labeling::Dict{S, Vector{String}},
                         transition_file_name::String = "mdp.tra",
                         labels_file_name::String = "mdp.lab")
-        write_mdp_transition(mdp, transition_file_name)
-        write_mdp_labels(mdp, labeling, labels_file_name)
+        if !isfile(transition_file_name)
+            write_mdp_transition(mdp, transition_file_name)
+        end
+        if !isfile(labels_file_name)
+            write_mdp_labels(mdp, labeling, labels_file_name)
+        end
         model = parse_mdp_model(transition_file_name, labels_file_name)
         return model
 end
