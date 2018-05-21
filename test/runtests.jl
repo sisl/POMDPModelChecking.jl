@@ -5,7 +5,7 @@ else
     using Test
 end
 
-using POMDPs, POMDPModels, POMDPToolbox
+using POMDPs, POMDPModels, POMDPToolbox, Distributions
 
 function label_grid_world(mdp::GridWorld)
     good_states = mdp.reward_states[mdp.reward_values .> 0.]
@@ -19,6 +19,11 @@ function label_grid_world(mdp::GridWorld)
     end
     labeling[GridWorldState(0, 0, true)] = ["good", "term"]
     return labeling
+end
+
+
+function POMDPs.initial_state_distribution(mdp::GridWorld)
+    return SparseCat(states(mdp), 1/n_states(mdp)*ones(n_states(mdp)))
 end
 
 rng = MersenneTwister(1)
@@ -60,3 +65,9 @@ threshold = 0.99
 safety_mask = SafetyMask(mdp, result, threshold)
 safe_actions(safety_mask, s)
 
+# test masked policy 
+masked_eg = MaskedEpsGreedyPolicy(mdp, 0.7, safety_mask, MersenneTwister(1))
+masked_v = MaskedValuePolicy(ValuePolicy(mdp), safety_mask)
+
+p0 = initial_probability(mdp, result)
+@test isapprox(p0, 0.964, atol=0.001)
