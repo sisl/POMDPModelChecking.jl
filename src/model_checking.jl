@@ -39,4 +39,3 @@ end
 function parse_mdp_model(transition_file_name::String, labels_file_name::String)
     return stormpy.build_sparse_model_from_explicit(transition_file_name, labels_file_name)
 end
-

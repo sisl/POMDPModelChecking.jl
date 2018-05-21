@@ -63,7 +63,7 @@ function safe_actions{M, A, S}(mask::SafetyMask{M,A}, s::S)
     si = state_index(mask.mdp, s)
     safe = mask.risk_vec[si] > mask.threshold ? true : false
     if !safe # follow safe controller
-        push!(safe_acts, mask.actions[indmax(mask.risk_mat[s, :])])
+        push!(safe_acts, mask.actions[indmax(mask.risk_mat[si, :])])
     else
         for (j, a) in enumerate(mask.actions)
             if mask.risk_mat[si, j] > mask.threshold
@@ -74,3 +74,19 @@ function safe_actions{M, A, S}(mask::SafetyMask{M,A}, s::S)
     return safe_acts
 end
 
+"""
+returns the initial probability of satisfying \$\phi\$: 
+\$\Sigma_s b(s)P(s \models \phi)\$
+
+    initial_probability(mdp::MDP, result::ModelCheckingResult)
+""" 
+function initial_probability(mdp::MDP, result::ModelCheckingResult)
+    P = get_proba(mdp, result)
+    p_init = 0.
+    d0 = initial_state_distribution(mdp)
+    for (s, p) in weighted_iterator(d0)
+        si = state_index(mdp, s)
+        p_init += p*P[si]
+    end
+    return p_init 
+end

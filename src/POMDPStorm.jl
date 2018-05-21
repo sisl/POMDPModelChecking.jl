@@ -16,12 +16,16 @@ export
     Scheduler, 
     get_proba, 
     get_state_action_proba,
+    initial_probability,
     SafetyMask,
-    safe_actions
+    safe_actions,
+    MaskedEpsGreedyPolicy,
+    MaskedValuePolicy
 
 include("writer.jl")
 include("model_checking.jl")
 include("scheduler.jl")
 include("safety_mask.jl")
+include("masked_policies.jl")
 
 end # module
