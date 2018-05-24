@@ -45,6 +45,14 @@ result = model_checking(mdp, labeling, property,
     transition_file_name="gw.tra",
     labels_file_name="gw.lab")
 
+# test overwrite
+println("There should be a warning between here: ")
+result = model_checking(mdp, labeling, property, 
+    transition_file_name="gw.tra",
+    labels_file_name="gw.lab",
+    overwrite = true)
+println("And here. ")
+
 # test scheduler extraction 
 scheduler = Scheduler(mdp, result)
 
