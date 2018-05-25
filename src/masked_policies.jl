@@ -1,4 +1,9 @@
 # Masked Eps Greedy Policy
+"""
+Epsilon greedy policy that operates within a safety mask. Both actions from the greedy part and the random part are drawn from the safe actions returned by 
+the safety mask.
+`MaskedEpsGreedyPolicy{S, A, M}(mdp::MDP{S, A}, epsilon::Float64, mask::M, rng::AbstractRNG)`
+"""
 struct MaskedEpsGreedyPolicy{M <: SafetyMask} <: Policy
     val::ValuePolicy # the greedy policy
     epsilon::Float64
@@ -17,6 +22,10 @@ function POMDPs.action{M}(policy::MaskedEpsGreedyPolicy{M}, s)
     end
 end
 
+"""
+A value policy that operates within a safety mask, it takes the action in the set of safe_actions that maximizes the given value function. 
+`MaskedValuePolicy{M <: SafetyMask}(val::ValuePolicy, mask::M`
+"""
 struct MaskedValuePolicy{M <: SafetyMask} <: Policy
     val::ValuePolicy
     mask::M

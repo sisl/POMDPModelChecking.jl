@@ -1,6 +1,7 @@
 """
 extract a vector P of size |S| where P(s) is the probability of satisfying a property
 when starting in state s 
+`get_proba(mdp::MDP, result::ModelCheckingResult)`
 """
 function get_proba(mdp::MDP, result::ModelCheckingResult)
     P = zeros(n_states(mdp))
@@ -10,8 +11,19 @@ function get_proba(mdp::MDP, result::ModelCheckingResult)
     return P
 end
 
-#XXX Not sure is this algorithm is mathematically sound!!! (should technically be over the product MDP)
-# return matrix of dimension |S|x|A|
+"""
+Returns a matrix of dimension |S|x|A| where each element is the probability of satisfying an LTL formula for a given state action pair.
+This algorithm is mathematically sound only for basic LTL property like "!a U b" !!! (should technically be over the product MDP)
+Arguments: 
+- `mdp::MDP` the MDP model
+- `result::ModelCheckingResult` result from model checking
+ `get_state_action_proba(mdp::MDP, P::Vector{Float64})`
+"""
+function get_state_action(mdp::MDP, result::ModelCheckingResult)
+    P = get_proba(mdp, result)
+    P_sa = get_state_action_proba(mdp, P)
+    return P_sa
+end
 function get_state_action_proba(mdp::MDP, P::Vector{Float64})
     P_sa = zeros(n_states(mdp), n_actions(mdp))
     states = ordered_states(mdp)
@@ -30,6 +42,9 @@ function get_state_action_proba(mdp::MDP, P::Vector{Float64})
     return P_sa
 end
 
+"""
+Extract a scheduler as a `VectorPolicy` from the model checking result 
+"""
 function POMDPToolbox.VectorPolicy{S, A}(mdp::MDP{S, A}, result::ModelCheckingResult{S})
     P = get_proba(mdp, result)
     P_sa = get_state_action_proba(mdp, P)
@@ -41,7 +56,10 @@ function POMDPToolbox.VectorPolicy{S, A}(mdp::MDP{S, A}, result::ModelCheckingRe
     return VectorPolicy(mdp, act_vec)
 end
 
-
+"""
+Build a safety mask: a `SafetyMask` object contains infromation on the "safety" of each state action pair of the MDP. Safety is measure as the probability of satisfying the desired LTL formula. It takes as input the mdp model, the result from model checking and a threshold on the probability of success. State action pairs for which the probability of success is below the threshold are considered as unsafe. 
+`SafetyMask{S, A}(mdp::MDP{S, A}, result::ModelCheckingResult, threshold::Float64)`
+"""
 struct SafetyMask{M <: MDP, A} 
     mdp::M
     threshold::Float64
@@ -56,7 +74,11 @@ function SafetyMask{S, A}(mdp::MDP{S, A}, result::ModelCheckingResult, threshold
     return SafetyMask(mdp, threshold, P, P_sa, actions(mdp))
 end
 
-# can be precomputed and stored when constructing the mask
+"""
+Returns a vector of safe actions to execute in state s
+An action is safe if the probability of success is above the threshold of the safety mask.
+`safe_actions{M, A, S}(mask::SafetyMask{M,A}, s::S)`
+"""
 function safe_actions{M, A, S}(mask::SafetyMask{M,A}, s::S)
     safe_acts = A[]
     sizehint!(safe_acts, n_actions(mask.mdp))
