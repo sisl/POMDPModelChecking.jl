@@ -82,5 +82,13 @@ This function returns a `ModelCheckingResult` object, from which the probability
 A safety mask is accompanied with the function `safe_actions{M, A, S}(mask::SafetyMask{M,A}, s::S)` which returns a vector of safe actions to execute in state s.
 Two different policies can be derived from a safety mask: `MaskedEpsGreedyPolicy` and `MaskedValuePolicy`. They are similar to their analogous in POMDPToolbox but the returned action is always in the set of safe actions given by the mask. 
 
+```julia 
+# example of how to initialize and use a safety mask
+threshold = 0.99 # desired risk threshold
+safety_mask = SafetyMask(mdp, result, threshold) # compute the probability of success for each state action pair, can take a while for large MDPs
+acts = safe_actions(safety_mask, s) # return a vector of safe actions to take in state s
+
+```
+
 - Extract a policy: for some formulas, storm will be able to extract a scheduler, to directly use the scheduler given by storm build a `Scheduler` object which can be use as a policy. If storm only returns a probability vector, a scheduler can be converted to a `VectorPolicy` object from POMDPToolbox (this conversion is only reliable for basic safety LTL properties for now).
 `POMDPToolbox.VectorPolicy{S, A}(mdp::MDP{S, A}, result::ModelCheckingResult{S})`
