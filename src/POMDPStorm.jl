@@ -1,4 +1,4 @@
-module POMDPStorm
+module MDPModelChecking
 
 # package code goes here
 using POMDPs, POMDPToolbox

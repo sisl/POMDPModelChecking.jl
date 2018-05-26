@@ -16,13 +16,13 @@ It also contains tools to build safety masks if the property to verify are safet
 
 To install the package run
 ```julia
-Pkg.clone("https://github.com/MaximeBouton/POMDPStorm.jl")
+Pkg.clone("https://github.com/MaximeBouton/MDPModelChecking.jl")
 ```
 
 It assumes that the Storm library and stormpy are already installed.
 
 ```julia
-using POMDPStorm, POMDPModels
+using MDPModelChecking, POMDPModels
 
 mdp = GridWorld()
 
