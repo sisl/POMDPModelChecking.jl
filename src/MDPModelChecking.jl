@@ -2,6 +2,7 @@ module MDPModelChecking
 
 # package code goes here
 using POMDPs, POMDPToolbox
+using LightGraphs
 using PyCall
 
 @pyimport stormpy
@@ -20,12 +21,28 @@ export
     SafetyMask,
     safe_actions,
     MaskedEpsGreedyPolicy,
-    MaskedValuePolicy
+    MaskedValuePolicy,
+    BuchiAutomata,
+    RabinAutomata,
+    acceptance_condition,
+    ltl2tgba,
+    hoa2buchi,
+    hoa2rabin,
+    maximal_end_components,
+    mdp_to_graph,
+    sub_mdp,
+    ProductMDP, 
+    ProductState,
+    labels,
+    accepting_states!
 
 include("writer.jl")
 include("model_checking.jl")
 include("scheduler.jl")
 include("safety_mask.jl")
 include("masked_policies.jl")
+include("automata.jl")
+include("product_mdp.jl")
+include("end_component.jl")
 
 end # module
