@@ -233,3 +233,26 @@ function parse_alphabet(l::String)
     end
     return alphabet
 end
+
+function automata_type(hoa_file::String)
+    autom_type = ""
+    open(hoa_file, "r") do f
+        l = ""
+        while autom_type == "" && !eof(f)
+            l = readline(f)
+            if contains(l, "acc-name")
+                if contains(l, "Rabin")
+                    autom_type = "Rabin"
+                elseif contains(l, "Buchi")
+                    autom_type = "Buchi"
+                else
+                    throw("HOAParsingError: Automata type not supported, only DFA with Rabin or Buchi acceptance conditions are supported")                    
+                end
+            end
+        end
+    end
+    if autom_type == ""
+        throw("HOAParsingError: Automata type not found")
+    end
+    return autom_type
+end
