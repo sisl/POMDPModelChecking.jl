@@ -4,7 +4,8 @@
 # algorithm 47 from "Principle of model checking"
 # an end component is defined as a set of states 
 
-function maximal_end_components(mdp::MDP{S, A}; verbose=false) where {S, A}
+function maximal_end_components(mdp::M; verbose=false) where {M <: Union{MDP, POMDP}}
+    verbose ? println("Building graph from mdp ... \n") : nothing
     mdpg = mdp_to_graph(mdp)
     state_space = states(mdp)
     MEC = Vector{Vector{Int64}}() 
@@ -12,7 +13,7 @@ function maximal_end_components(mdp::MDP{S, A}; verbose=false) where {S, A}
     push!(MECnew, 1:n_states(mdp))# initialize
     DEBUG_STEP = 1 #XXX
     DEBUG_MAX_STEPS = 100 # XXX
-
+    verbose ? println("Computing Maximal End Components ... \n") : nothing
     while MEC != MECnew
         MEC = deepcopy(MECnew)
         MECnew = Vector{Vector{Int64}}()
@@ -33,11 +34,12 @@ function maximal_end_components(mdp::MDP{S, A}; verbose=false) where {S, A}
         verbose ? println("finished $DEBUG_STEP step, old MEC $MEC -> new MEC $MECnew") : nothing
         DEBUG_STEP += 1
     end
+    verbose ? println("MECs computed. \n") : nothing
     return MEC
 end
 
 # convert MDP to graph 
-function mdp_to_graph(mdp::M) where {M <: MDP}
+function mdp_to_graph(mdp::M) where {M <: Union{MDP, POMDP}}
     g = DiGraph(n_states(mdp))
     for (i, s) in enumerate(ordered_states(mdp))
         si = state_index(mdp, s)
@@ -58,13 +60,12 @@ function mdp_to_graph(mdp::M) where {M <: MDP}
 end
 
 # return a graph of the subMDP defined by ss
-function sub_mdp(mdp::MDP{S, A}, state_indices::Vector{Int64}, state_space::AbstractArray{S}) where {S, A}
+function sub_mdp(mdp::M, state_indices::Vector{Int64}, state_space::AbstractArray{S}) where {S, M<:Union{MDP,POMDP}}
     g = DiGraph(length(state_indices))
     for (i, si) in enumerate(state_indices)
         s = state_space[si]
         if isterminal(mdp, s)
-            add_edge!(g, i, i)
-            
+            add_edge!(g, i, i)            
         end
         for a in actions(mdp, s)
             d = transition(mdp, s, a)

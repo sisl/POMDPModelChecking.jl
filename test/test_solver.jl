@@ -1,4 +1,4 @@
-using DiscreteValueIteration
+using POMDPs, POMDPModels, MDPModelChecking, DiscreteValueIteration
 
 mdp = GridWorld(sx=10,sy=10)
 mdp.reward_states = [GridWorldState(4, 3), GridWorldState(4, 6), GridWorldState(9, 3)]

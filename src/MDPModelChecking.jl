@@ -38,13 +38,15 @@ export
     maximal_end_components,
     mdp_to_graph,
     sub_mdp,
-    ProductMDP, 
     ProductState,
+    ProductMDP, 
+    ProductPOMDP,
     labels,
     accepting_states!,
     ModelCheckingSolver,
     ModelCheckingPolicy,
-    reset_memory!
+    reset_memory!,
+    value_vector
 
 include("writer.jl")
 include("storm_model_checking.jl")
@@ -53,6 +55,7 @@ include("safety_mask.jl")
 include("masked_policies.jl")
 include("automata.jl")
 include("product_mdp.jl")
+include("product_pomdp.jl")
 include("end_component.jl")
 include("model_checking_solver.jl")
 

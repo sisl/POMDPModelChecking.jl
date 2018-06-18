@@ -1,5 +1,7 @@
 abstract type Automata{Q, A} end
 
+# interface for automata:
+
 struct BuchiAutomata{Q, A} <: Automata{Q, A}
     states::Vector{Q}
     alphabet::Vector{A}
@@ -29,6 +31,10 @@ end
 
 function POMDPs.state_index(autom::B, q::Int64) where B <: Automata
     return q 
+end
+
+function POMDPs.n_states(autom::Union{BuchiAutomata, RabinAutomata})
+    return length(atuom.states)
 end
 
 #  return true if there is a  transitions q, l, q' given q and l 

@@ -4,7 +4,7 @@
     solver::Solver = ValueIterationSolver() # can use any solver that returns a value function :o
 end
 
-mutable struct ModelCheckingPolicy{P <: Policy, M <: ProductMDP, Q} <: Policy
+mutable struct ModelCheckingPolicy{P <: Policy, M <:Union{ProductMDP, ProductPOMDP}, Q} <: Policy
     policy::P
     mdp::M
     memory::Q
@@ -12,7 +12,7 @@ end
 
 # NOTE: the returned value function will be 0. at the accepting states instead of 1, this is overriden by the implementation 
 # of POMDPs.value below.
-function POMDPs.solve(solver::ModelCheckingSolver, mdp::MDP{S, A}) where {S, A}
+function POMDPs.solve(solver::ModelCheckingSolver, problem::M; verbose::Bool=false) where M<:Union{MDP,POMDP}
     # parse formula first 
     ltl2tgba(solver.property, solver.automata_file)
     autom_type = automata_type(solver.automata_file)
@@ -22,9 +22,16 @@ function POMDPs.solve(solver::ModelCheckingSolver, mdp::MDP{S, A}) where {S, A}
     elseif autom_type == "Rabin"
         automata = hoa2rabin(solver.automata_file)
     end
-    pmdp = ProductMDP(mdp, automata) # build product mdp x automata
-    acc = accepting_states!(pmdp) # compute the maximal end component via a graph analysis
-    policy = solve(solver.solver, pmdp) # solve using your favorite method
+    pmdp = nothing
+    if isa(problem, POMDP)
+        pmdp = ProductPOMDP(problem, automata)
+    else
+        pmdp = ProductMDP(problem, automata) # build product mdp x automata
+    end
+    if isempty(pmdp.accepting_states)
+        accepting_states!(pmdp, verbose=verbose) # compute the maximal end components via a graph analysis
+    end
+    policy = solve(solver.solver, pmdp, verbose=verbose) # solve using your favorite method
     return ModelCheckingPolicy(policy, pmdp, automata.initial_state)
 end
 
@@ -38,6 +45,10 @@ function POMDPs.action(policy::ModelCheckingPolicy, s::ProductState{S, Q}) where
     return action(policy.policy, s)
 end
 
+function POMDPs.value(policy::ModelCheckingPolicy, s)
+    return value(policy, ProductState(s, policy.memory))
+end
+
 function POMDPs.value(policy::ModelCheckingPolicy, s::ProductState{S, Q}) where {S, Q}
     if s ∈ policy.mdp.accepting_states  # see comment in POMDPs.solve
         return 1.0 
@@ -46,11 +57,11 @@ function POMDPs.value(policy::ModelCheckingPolicy, s::ProductState{S, Q}) where 
     end
 end
 
-function value_vector(policy::ModelCheckingPolicy,  s::ProductState{S, Q}) where {S, Q}
+function value_vector(policy::ModelCheckingPolicy,  s)
     if s ∈ policy.mdp.accepting_states
         return ones(n_actions(policy.mdp))
     else
-        return value(policy.policy, s)
+        return value_vector(policy.policy, s)
     end
 end
 

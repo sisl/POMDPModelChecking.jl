@@ -26,16 +26,17 @@ end
 # should be implemented by the problem writer
 """
 Returns the labels associated with state s 
-labels(mdp::M, s) where {M <: MDP}
+labels(mdp::M, s) where {M <: Union{MDP,POMDP}}
 """
 function labels end
 
 # returns the set of accepting states
-function accepting_states!(mdp::ProductMDP{S, A, Q, T}) where {S, A, Q, T}
-    MECs = maximal_end_components(mdp)
+function accepting_states!(mdp::ProductMDP{S, A, Q, T}; verbose::Bool=false) where {S, A, Q, T}
+    MECs = maximal_end_components(mdp, verbose=verbose)
     state_space = states(mdp)
     mdp.accepting_states = Set{ProductState{S, Q}}()
     inf_q, fin_q = acceptance_condition(mdp.automata)
+    verbose ? println("Extracting accepting states from MECs ... \n") : nothing
     for ec in MECs
         ec_states = Set(state_space[i].q for i in ec)
         if !isempty(intersect(ec_states, inf_q)) && isempty(intersect(ec_states, fin_q))
@@ -44,6 +45,7 @@ function accepting_states!(mdp::ProductMDP{S, A, Q, T}) where {S, A, Q, T}
             end
         end
     end
+    verbose ? println("Accepting states computed. \n") : nothing
     return mdp.accepting_states
 end
 
@@ -101,19 +103,6 @@ function POMDPs.initial_state_distribution{S, A, Q, T}(problem::ProductMDP{S, A,
         push!(new_vals, ProductState(s0, q0))
         push!(new_probs, p)
     end
-    # true_lab = ["t"]
-    # for (s, p) in weighted_iterator(b0)
-    #     l = labels(problem.mdp, s)
-    #     if haskey(problem.automata.transition, (q0, l))
-    #         q = problem.automata.transition[(q0, l)]
-    #         push!(new_probs, p)
-    #         push!(new_vals, ProductState(s, q))
-    #     elseif haskey(problem.automata.transition, (q0, true_lab))
-    #         q = problem.automata.transition[(q0, true_lab)]
-    #         push!(new_probs, p)
-    #         push!(new_vals, ProductState(s, q))
-    #     end
-    # end
     normalize!(new_probs, 1)
     return SparseCat{Vector{ProductState{S, Q}}, Vector{Float64}}(new_vals, new_probs)
 end
@@ -132,13 +121,6 @@ end
 
 POMDPs.actions(problem::ProductMDP) = actions(problem.mdp)
 
-# POMDPs.reward{S, A}(problem::ProductMDP, state::S, action::A) = reward(problem.mdp, state, action)
-
-# this one is a bit tricky, should we add accepting states as terminal?
-# POMDPs.isterminal{S}(problem::ProductMDP, state::S) = isterminal(problem.mdp, state)
-
-
-
 POMDPs.n_states(problem::ProductMDP) = n_states(problem.mdp)*length(problem.automata.states)
 
 POMDPs.n_actions(problem::ProductMDP) = n_actions(problem.mdp)
@@ -154,6 +136,24 @@ POMDPs.state_type(p::ProductMDP) = ProductState{state_type(p.mdp), eltype(p.auto
 POMDPs.action_type(p::ProductMDP) = action_type(p.mdp)
 
 POMDPs.action_index{A}(p::ProductMDP, a::A) = action_index(p.mdp, a)
+
+POMDPs.convert_a(T::Type{V}, a, p::ProductMDP) where V<:AbstractArray = convert_a(T, a, p.mdp)
+POMDPs.convert_a(T::Type{A}, vec::V, p::ProductMDP) where {A,V<:AbstractArray} = convert_a(T, vec, p.mdp)
+
+function POMDPs.convert_s(T::Type{Vector{Float64}}, s::ProductState{S,Int64}, p::ProductMDP) where S
+    v_mdp = convert_s(T, s.s, p.mdp) # convert mdp state 
+    v_autom = zeros(n_states(p.automata))
+    v_autom = 1.0
+    return cat(1, v_mdp, v_autom)
+end
+
+function POMDPs.convert_s(::Type{ProductState{S,Int64}}, vec::Vector{Float64}, p::ProductMDP) where {S}
+    v_mdp = vec[1:end-n_states(p.automata)]
+    v_autom = vec[end-n_states(p.automata)+1:end]
+    s = convert_s(S, v_mdp, p.mdp)
+    q = findfirst(v_autom)
+    return ProductState(s, q)
+end
 
 # POMDPs.convert_s(::Type{V}, s, problem::Union{MDP,POMDP}) where V<:AbstractArray
 # POMDPs.convert_s(::Type{S}, vec::V, problem::Union{MDP,POMDP}) where {S,V<:AbstractArray}
