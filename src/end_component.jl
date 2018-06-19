@@ -72,7 +72,7 @@ function sub_mdp(mdp::M, state_indices::Vector{Int64}, state_space::AbstractArra
             is_action_valid = true
             for (sp, p) in weighted_iterator(d)
                 spi = state_index(mdp, sp)
-                if !in(spi, state_indices) && !(p ≈ 0.)
+                if !(p ≈ 0.) && !in(spi, state_indices)
                     is_action_valid = false
                 end
             end
