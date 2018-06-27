@@ -1,4 +1,4 @@
-# MDPModelChecking.jl
+# MDPModelChecking.jl (branch product)
 
 [![Build Status](https://travis-ci.org/MaximeBouton/MDPModelChecking.jl.svg?branch=master)](https://travis-ci.org/MaximeBouton/MDPModelChecking.jl)
 

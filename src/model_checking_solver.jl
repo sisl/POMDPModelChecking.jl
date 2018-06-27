@@ -67,7 +67,7 @@ end
 
 function value_vector(policy::ValueIterationPolicy,  s)
     si = state_index(policy.mdp, s)
-    return policy.value_table[si, :]
+    return policy.qmat[si, :]
 end
 
 function reset_memory!(policy::ModelCheckingPolicy)

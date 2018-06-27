@@ -11,7 +11,7 @@ struct MaskedEpsGreedyPolicy{M <: SafetyMask} <: Policy
     rng::AbstractRNG
 end
 
-MaskedEpsGreedyPolicy{S, A, M}(mdp::MDP{S, A}, epsilon::Float64, mask::M, rng::AbstractRNG) = MaskedEpsGreedyPolicy(ValuePolicy(mdp), epsilon, mask, rng)
+MaskedEpsGreedyPolicy(mdp::MDP{S, A}, epsilon::Float64, mask::M, rng::AbstractRNG) where {S, A, M <: SafetyMask} = MaskedEpsGreedyPolicy{M}(ValuePolicy(mdp), epsilon, mask, rng)
 
 function POMDPs.action{M}(policy::MaskedEpsGreedyPolicy{M}, s)
     acts = safe_actions(policy.mask, s)
