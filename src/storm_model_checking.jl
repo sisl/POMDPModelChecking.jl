@@ -59,3 +59,77 @@ end
 function parse_mdp_model(transition_file_name::String, labels_file_name::String)
     return stormpy.build_sparse_model_from_explicit(transition_file_name, labels_file_name)
 end
+
+
+struct StormPolicy{M<:MDP} <: Policy 
+    mdp::M
+    risk_vec::Vector{Float64}
+    risk_mat::Array{Float64, 2}
+end
+
+function StormPolicy(mdp::MDP, result::ModelCheckingResult)
+    risk_vec = get_proba(mdp, result)
+    risk_mat = get_state_action_proba(mdp, risk_vec)
+    return StormPolicy(mdp, risk_vec, risk_mat)
+end
+
+function value_vector(policy::StormPolicy, s)
+    si = state_index(policy.mdp, s)
+    return policy.risk_mat[si, :]
+end
+
+function value(policy::StormPolicy, s)
+    si = state_index(policy.mdp, s)
+    return policy.risk_vec[si]
+end
+
+function action(policy::StormPolicy, s)
+    acts = actions(mdp)
+    vals = value_vector(policy, s)
+    return acts[indmax(vals)]
+end
+
+    
+"""
+extract a vector P of size |S| where P(s) is the probability of satisfying a property
+when starting in state s 
+`get_proba(mdp::MDP, result::ModelCheckingResult)`
+"""
+function get_proba(mdp::MDP, result::ModelCheckingResult)
+    P = zeros(n_states(mdp))
+    for (i, val) in enumerate(result.result[:get_values]())
+        P[i] = val
+    end
+    return P
+end
+
+"""
+Returns a matrix of dimension |S|x|A| where each element is the probability of satisfying an LTL formula for a given state action pair.
+This algorithm is mathematically sound only for basic LTL property like "!a U b" !!! (should technically be over the product MDP)
+Arguments: 
+- `mdp::MDP` the MDP model
+- `result::ModelCheckingResult` result from model checking
+ `get_state_action_proba(mdp::MDP, P::Vector{Float64})`
+"""
+function get_state_action(mdp::MDP, result::ModelCheckingResult)
+    P = get_proba(mdp, result)
+    P_sa = get_state_action_proba(mdp, P)
+    return P_sa
+end
+function get_state_action_proba(mdp::MDP, P::Vector{Float64})
+    P_sa = zeros(n_states(mdp), n_actions(mdp))
+    states = ordered_states(mdp)
+    actions = ordered_actions(mdp)
+    for (si, s) in enumerate(states)
+        P[si] == 0. ? continue : nothing             
+        for (ai, a) in enumerate(actions)
+            dist = transition(mdp, s, a)
+            for (sp, p) in  weighted_iterator(dist)
+                p == 0.0 ? continue : nothing # skip if zero prob
+                spi = state_index(mdp, sp)
+                P_sa[si, ai] += p * P[spi]
+            end
+        end
+    end
+    return P_sa
+end
