@@ -56,7 +56,7 @@ mdp = GridWorld()
 
 pmdp = ProductMDP(mdp, automata)
 
-b0 = initial_state_distribution(pmdp)
+b0 = initialstate_distribution(pmdp)
 
 
 
@@ -65,7 +65,7 @@ action_space = actions(pmdp)
 γ = discount(pmdp)
 n_states(pmdp) == length(state_space)
 n_actions(pmdp) == length(action_space)
-state_type(pmdp) == ProductState{GridWorldState, Int64}
+statetype(pmdp) == ProductState{GridWorldState, Int64}
 action_type(pmdp) == Symbol
 
 test_state_indexing(pmdp)

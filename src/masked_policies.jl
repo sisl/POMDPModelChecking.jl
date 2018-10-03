@@ -13,7 +13,7 @@ end
 
 MaskedEpsGreedyPolicy(mdp::MDP{S, A}, epsilon::Float64, mask::M, rng::AbstractRNG) where {S, A, M <: SafetyMask} = MaskedEpsGreedyPolicy{M}(ValuePolicy(mdp), epsilon, mask, rng)
 
-function POMDPs.action{M}(policy::MaskedEpsGreedyPolicy{M}, s)
+function POMDPs.action(policy::MaskedEpsGreedyPolicy{M}, s) where M
     acts = safe_actions(policy.mask, s)
     if rand(policy.rng) < policy.epsilon
         return rand(policy.rng, acts)
@@ -31,12 +31,12 @@ struct MaskedValuePolicy{M <: SafetyMask} <: Policy
     mask::M
 end
 
-function POMDPs.action{M}(policy::MaskedValuePolicy{M}, s)
+function POMDPs.action(policy::MaskedValuePolicy{M}, s) where M
     acts = safe_actions(policy.mask, s)
     return best_action(acts, policy.val, s)
 end
 
-function best_action{A, M}(acts::Vector{A}, policy::ValuePolicy{A, M}, s)
+function best_action(acts::Vector{A}, policy::ValuePolicy{A, M}, s) where {A,M}
     si = state_index(policy.mdp, s)
     best_ai = 1
     best_val = policy.value_table[si, best_ai]

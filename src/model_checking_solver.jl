@@ -2,6 +2,7 @@
     property::String = "" 
     automata_file::String = "automata.hoa"
     solver::Solver = ValueIterationSolver() # can use any solver that returns a value function :o
+    verbose::Bool = false
 end
 
 mutable struct ModelCheckingPolicy{P <: Policy, M <:Union{ProductMDP, ProductPOMDP}, Q} <: Policy
@@ -12,7 +13,8 @@ end
 
 # NOTE: the returned value function will be 0. at the accepting states instead of 1, this is overriden by the implementation 
 # of POMDPs.value below.
-function POMDPs.solve(solver::ModelCheckingSolver, problem::M; verbose::Bool=false) where M<:Union{MDP,POMDP}
+function POMDPs.solve(solver::ModelCheckingSolver, problem::M) where M<:Union{MDP,POMDP}
+    verbose = solver.verbose
     # parse formula first 
     ltl2tgba(solver.property, solver.automata_file)
     autom_type = automata_type(solver.automata_file)
@@ -31,7 +33,7 @@ function POMDPs.solve(solver::ModelCheckingSolver, problem::M; verbose::Bool=fal
     if isempty(pmdp.accepting_states)
         accepting_states!(pmdp, verbose=verbose) # compute the maximal end components via a graph analysis
     end
-    policy = solve(solver.solver, pmdp, verbose=verbose) # solve using your favorite method
+    policy = solve(solver.solver, pmdp) # solve using your favorite method
     return ModelCheckingPolicy(policy, pmdp, automata.initial_state)
 end
 

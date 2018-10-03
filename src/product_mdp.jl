@@ -94,8 +94,8 @@ function POMDPs.transition(problem::ProductMDP{S, A, Q, T}, state::ProductState{
 end
 
 
-function POMDPs.initial_state_distribution{S, A, Q, T}(problem::ProductMDP{S, A, Q, T})
-    b0 = initial_state_distribution(problem.mdp)
+function POMDPs.initialstate_distribution(problem::ProductMDP{S, A, Q, T}) where {S, A, Q, T}
+    b0 = initialstate_distribution(problem.mdp)
     new_probs = Float64[]
     new_vals = Vector{ProductState{S, Q}}()
     q0 = problem.automata.initial_state
@@ -108,7 +108,7 @@ function POMDPs.initial_state_distribution{S, A, Q, T}(problem::ProductMDP{S, A,
 end
 
 function POMDPs.states(problem::ProductMDP) 
-    S = state_type(problem.mdp)
+    S = statetype(problem.mdp)
     Q = eltype(problem.automata.states)
     state_space = ProductState{S, Q}[]
     for s in ordered_states(problem.mdp)
@@ -125,17 +125,17 @@ POMDPs.n_states(problem::ProductMDP) = n_states(problem.mdp)*length(problem.auto
 
 POMDPs.n_actions(problem::ProductMDP) = n_actions(problem.mdp)
 
-function POMDPs.state_index(problem::ProductMDP, s::S) where S <: ProductState
-    si = state_index(problem.mdp, s.s)
-    qi = state_index(problem.automata, s.q)
-    return sub2ind((length(problem.automata.states), n_states(problem.mdp)), qi, si)
+function POMDPs.stateindex(problem::ProductMDP, s::S) where S <: ProductState
+    si = stateindex(problem.mdp, s.s)
+    qi = stateindex(problem.automata, s.q)
+    return LinearIndices((length(problem.automata.states), n_states(problem.mdp)))[qi, si]
 end
 
-POMDPs.state_type(p::ProductMDP) = ProductState{state_type(p.mdp), eltype(p.automata.states)}
+POMDPs.statetype(p::ProductMDP) = ProductState{statetype(p.mdp), eltype(p.automata.states)}
 
-POMDPs.action_type(p::ProductMDP) = action_type(p.mdp)
+POMDPs.actiontype(p::ProductMDP) = actiontype(p.mdp)
 
-POMDPs.action_index{A}(p::ProductMDP, a::A) = action_index(p.mdp, a)
+POMDPs.actionindex(p::ProductMDP, a::A) where A = actionindex(p.mdp, a) 
 
 POMDPs.convert_a(T::Type{V}, a, p::ProductMDP) where V<:AbstractArray = convert_a(T, a, p.mdp)
 POMDPs.convert_a(T::Type{A}, vec::V, p::ProductMDP) where {A,V<:AbstractArray} = convert_a(T, vec, p.mdp)
