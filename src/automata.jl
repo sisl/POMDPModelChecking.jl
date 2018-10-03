@@ -29,7 +29,7 @@ function acceptance_condition(automata::RabinAutomata)
     return automata.inf, automata.fin
 end
 
-function POMDPs.state_index(autom::B, q::Int64) where B <: Automata
+function POMDPs.stateindex(autom::B, q::Int64) where B <: Automata
     return q 
 end
 
@@ -94,22 +94,22 @@ function hoa2buchi(file_name::String)
         l = readline(f) 
         while l != "--BODY--"
             # parse header
-            if contains(l, "acc-name")
-                if !contains(l, "Buchi")
+            if occursin("acc-name", l)
+                if !occursin("Buchi", l)
                     autom_type = l[length("acc-name: ")+1:end]
                     throw("HOAParsingError: this function only supports Buchi automata, the file you provided was for a $autom_type")   
                 end
-            elseif contains(l, "States")
-                n_states = parse(Int64, l[search(l, r"\d+")])
+            elseif occursin("States", l)
+                n_states = parse(Int64, match(r"\d+", l).match)
                 states = 1:n_states
-            elseif contains(l, "Start")
-                initial_state = parse(Int64, l[search(l, r"\d+")]) + 1
-            elseif contains(l, "name")
-                name = l[search(l, r"\"(.*?)\"")]
+            elseif occursin("Start", l)
+                initial_state = parse(Int64, match(r"\d+", l).match) + 1
+            elseif occursin(l, "name")
+                name = match(r"\"(.*?)\"", l).match
                 property = name[2:end-1] # remove quotes
-            elseif contains(l, "AP")
+            elseif occursin("AP", l)
                 alphabet = parse_alphabet(l)
-            elseif contains(l, "Acceptance")
+            elseif occursin("Acceptance", l)
             
             end
             l = readline(f)
@@ -120,23 +120,23 @@ function hoa2buchi(file_name::String)
         ln += 1
         cur_state = 0
         while l != "--END--"
-            if contains(l, "State")
+            if occursin("State", l)
                 # set current state 
-                cur_state = parse(Int64, l[search(l, r"\d+")]) + 1
+                cur_state = parse(Int64, match(r"\d+", l).match) + 1
                 # check if it is accepting 
-                acc = l[search(l, r"\{(.*?)\}")]
-                if !isempty(acc)
+                acc = match(r"\{(.*?)\}", l)
+                if acc != nothing
                     push!(acceptance, cur_state)
                 end
             else
                 # set edge 
-                input = l[search(l, r"\[(.*?)\]")][2:end-1]
+                input = match(r"\[(.*?)\]", l).match[2:end-1]
                 inputs = split(input, "&")
                 for i=1:length(inputs)
-                    inputs[i] = replace(inputs[i], r"\d+", x->alphabet[parse(Int64, x)+1])
+                    inputs[i] = replace(inputs[i], r"\d+" => x->alphabet[parse(Int64, x)+1])
                 end
                 inputs = Set(inputs)
-                succ = parse(Int64, l[search(l, r"\s(.*?)($|\s)")]) + 1
+                succ = parse(Int64, match(r"\s(.*?)($|\s)", l).match) + 1
                 transition[(cur_state, inputs)] = succ
             end
             l = readline(f)
@@ -166,28 +166,28 @@ function hoa2rabin(file_name::String)
         l = readline(f) 
         while l != "--BODY--"
             # parse header
-            if contains(l, "acc-name")
-                if !contains(l, "Rabin")
+            if occursin("acc-name", l)
+                if !occursin("Rabin", l)
                     autom_type = l[length("acc-name: ")+1:end]
                     throw("HOAParsingError: this function only supports Rabin automata, the file you provided was for a $autom_type")   
                 end
-            elseif contains(l, "States")
-                n_states = parse(Int64, l[search(l, r"\d+")])
+            elseif occursin("States", l)
+                n_states = parse(Int64, match(r"\d+", l).match)
                 states = 1:n_states
-            elseif contains(l, "Start")
-                initial_state = parse(Int64, l[search(l, r"\d+")]) + 1
-            elseif contains(l, "name")
-                name = l[search(l, r"\"(.*?)\"")]
+            elseif occursin("Start", l)
+                initial_state = parse(Int64, match(r"\d+", l).match) + 1
+            elseif occursin("name", l)
+                name = match(r"\"(.*?)\"", l).match
                 property = name[2:end-1] # remove quotes
-            elseif contains(l, "AP")
+            elseif occursin("AP", l)
                 alphabet = parse_alphabet(l)
-            elseif contains(l, "Acceptance")
-                n_sets = parse(Int64, l[search(l, r"\d+")]) 
+            elseif occursin("Acceptance", l)
+                n_sets = parse(Int64, match(r"\d+", l).match) 
                 @assert n_sets == 2
-                fin_str = l[search(l, r"Fin\(\d+\)")]
-                fin_idx = parse(Int64, fin_str[search(fin_str, r"\d+")])
-                inf_str = l[search(l, r"Inf\(\d+\)")]
-                inf_idx = parse(Int64, inf_str[search(inf_str, r"\d+")]) 
+                fin_str = match(r"Fin\(\d+\)", l).match
+                fin_idx = parse(Int64, match(r"\d+", fin_str).match)
+                inf_str = match(r"Inf\(\d+\)", l).match
+                inf_idx = parse(Int64, match(r"\d+", inf_str).match) 
             end
             l = readline(f)
             ln += 1
@@ -197,13 +197,13 @@ function hoa2rabin(file_name::String)
         ln += 1
         cur_state = 0
         while l != "--END--"
-            if contains(l, "State")
+            if occursin("State", l)
                 # set current state 
-                cur_state = parse(Int64, l[search(l, r"\d+")]) + 1
+                cur_state = parse(Int64, match(r"\d+", l).match) + 1
                 # check if it is accepting 
-                acc = l[search(l, r"\{(.*?)\}")]
-                if !isempty(acc)
-                    acc_idx = parse(Int64, acc[2:end-1])
+                acc = match(r"\{(.*?)\}", l)
+                if acc != nothing
+                    acc_idx = parse(Int64, acc.match[2:end-1])
                     if acc_idx == fin_idx 
                         push!(fin, cur_state)
                     elseif acc_idx == inf_idx 
@@ -214,13 +214,13 @@ function hoa2rabin(file_name::String)
                 end
             else
                 # set edge 
-                input = l[search(l, r"\[(.*?)\]")][2:end-1]
+                input = match(r"\[(.*?)\]", l).match[2:end-1]
                 inputs = split(input, "&")
                 for i=1:length(inputs)
-                    inputs[i] = replace(inputs[i], r"\d+", x->alphabet[parse(Int64, x)+1])
+                    inputs[i] = replace(inputs[i], r"\d+" => x->alphabet[parse(Int64, x)+1])
                 end
                 inputs = Set(inputs)
-                succ = parse(Int64, l[search(l, r"\s(.*?)($|\s)")]) + 1
+                succ = parse(Int64, match(r"\s(.*?)($|\s)", l).match) + 1
                 transition[(cur_state, inputs)] = succ
             end
             l = readline(f)
@@ -231,8 +231,8 @@ function hoa2rabin(file_name::String)
 end
         
 function parse_alphabet(l::String)
-    n_inputs = parse(Int64, l[search(l, r"\d+")])
-    alphabet = Vector{String}(n_inputs)
+    n_inputs = parse(Int64, match(r"\d+", l).match)
+    alphabet = Vector{String}(undef, n_inputs)
     for (i,a) in enumerate(split(l)[3:end])
         # remove quotes
         alphabet[i] = a[2:end-1]
@@ -246,10 +246,10 @@ function automata_type(hoa_file::String)
         l = ""
         while autom_type == "" && !eof(f)
             l = readline(f)
-            if contains(l, "acc-name")
-                if contains(l, "Rabin")
+            if occursin("acc-name", l)
+                if occursin("Rabin", l)
                     autom_type = "Rabin"
-                elseif contains(l, "Buchi")
+                elseif occursin("Buchi", l)
                     autom_type = "Buchi"
                 else
                     throw("HOAParsingError: Automata type not supported, only DFA with Rabin or Buchi acceptance conditions are supported")                    

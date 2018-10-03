@@ -1,30 +1,6 @@
-# discrete MDP 1 
-# actions: [go, safe, risk, reset, finish, stop]
-function POMDPs.actions(mdp::DiscreteMDP, s::Int64)
-    if s == 1
-        return [1]
-    elseif s == 2
-        return [2, 3]
-    elseif s == 3
-        return [5]
-    elseif s == 4
-        return [4, 6]
-    end
-end     
-
-function MDPModelChecking.labels(mdp::DiscreteMDP, s::Int64)
-    if s == 1
-        return ["!succ", "!fail"]
-    elseif s == 3
-        # return ["succ", "!fail"]
-        return ["succ", "!fail"]
-    elseif s == 4
-        return ["fail"]
-    else
-        return ["!succ", "!fail"]
-    end
-end
-
+using MDPModelChecking
+using POMDPModels
+using POMDPs
 # discrete MDP 1 
 ns = 4
 na = 6
@@ -34,7 +10,7 @@ T = zeros(ns, na, ns) # sp, a, s
 
 # from state 1
 T[2,1, 1] = 1.0  # if go, move to 2
-T[1,2:na,1] = 1.0 # else stay
+T[1,2:na,1] .= 1.0 # else stay
 
 # from state 2
 T[1,2,2] = 0.7 # if (s2, safe) end up in 1
@@ -43,17 +19,17 @@ T[3,2,2] = 0.3 # if (s2, safe) end up in 3
 T[3,3,2] = 0.5
 T[4,3,2] = 0.5
 T[2,1,2] = 1.
-T[2,4:end,2] = 1.
+T[2,4:end,2] .= 1.
 
 # from state 3
-T[3,:,3] = 1
+T[3,:,3] .= 1
 
 # from state 4 
-T[4,:,4] = 1.
-T[:,4,4] = 0.
+T[4,:,4] .= 1.
+T[:,4,4] .= 0.
 T[1,4,4] = 1.
 
-mdp = DiscreteMDP(T, R, 0.95)
+mdp = TabularMDP(T, R, 0.95)
 
 
 # product mdp
@@ -64,7 +40,7 @@ automata = hoa2rabin("discrete.hoa")
 
 pmdp = ProductMDP(mdp, automata)
 
-b0 = initial_state_distribution(pmdp)
+b0 = initialstate_distribution(pmdp)
 
 
 # state_space = states(pmdp)

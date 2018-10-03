@@ -1,10 +1,14 @@
 module MDPModelChecking
 
 # package code goes here
-using POMDPs, POMDPToolbox
+using POMDPs
+using POMDPModelTools
+using POMDPPolicies
 using LightGraphs
-using DiscreteValueIteration
 using Parameters
+using Random
+using LinearAlgebra
+using DiscreteValueIteration
 # using PyCall
 
 # @pyimport stormpy

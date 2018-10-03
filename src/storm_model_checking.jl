@@ -20,10 +20,10 @@ of success.
 
 `model_checking{S}(mdp::MDP{S}, labeling::Dict{S, Vector{String}}, property::String; transition_file_name::String = "mdp.tra", labels_file_name::String = "mdp.lab", overwrite::Bool = false)`
 """
-function model_checking{S}(mdp::MDP{S}, labeling::Dict{S, Vector{String}}, property::String;
+function model_checking(mdp::MDP{S}, labeling::Dict{S, Vector{String}}, property::String;
                         transition_file_name::String = "mdp.tra",
                         labels_file_name::String = "mdp.lab", 
-                        overwrite::Bool = false)
+                        overwrite::Bool = false) where S
     model = parse_mdp_model(mdp, labeling, transition_file_name, labels_file_name, overwrite)
     properties = stormpy.parse_properties(property)
     result = stormpy.model_checking(model, properties[1],  only_initial_states=false, extract_scheduler=true)
@@ -34,10 +34,10 @@ end
 """
     parse an MDP model with Storm, if the specified transition and labels file do not exist it will write the files first
 """
-function parse_mdp_model{S}(mdp::MDP{S}, labeling::Dict{S, Vector{String}},
+function parse_mdp_model(mdp::MDP{S}, labeling::Dict{S, Vector{String}},
                         transition_file_name::String = "mdp.tra",
                         labels_file_name::String = "mdp.lab",
-                        overwrite::Bool = false)
+                        overwrite::Bool = false) where S
         if overwrite
             warn("overwriting potential existing files!")
             try 

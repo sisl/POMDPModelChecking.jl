@@ -1,4 +1,6 @@
-|
+using MDPModelChecking
+using Test
+
 function label_grid_world(mdp::GridWorld)
     good_states = mdp.reward_states[mdp.reward_values .> 0.]
     bad_states = mdp.reward_states[mdp.reward_values .< 0.]
