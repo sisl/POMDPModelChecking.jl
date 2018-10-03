@@ -5,9 +5,9 @@ using POMDPs, POMDPToolbox
 using LightGraphs
 using DiscreteValueIteration
 using Parameters
-using PyCall
+# using PyCall
 
-@pyimport stormpy
+# @pyimport stormpy
 
 export 
 
@@ -54,14 +54,14 @@ export
 include("safety_mask.jl")
 include("masked_policies.jl")
 
-export     write_mdp_transition,
-    write_mdp_labels,
-    parse_mdp_model, 
-    model_checking,
-    ModelCheckingResult,
-    StormPolicy,
-    get_proba,
-    get_state_action_proba
+# export     write_mdp_transition,
+#     write_mdp_labels,
+#     parse_mdp_model, 
+#     model_checking,
+#     ModelCheckingResult,
+#     StormPolicy,
+#     get_proba,
+#     get_state_action_proba
 #     Scheduler, 
 #     get_proba, 
 #     get_state_action_proba,
@@ -71,8 +71,8 @@ export     write_mdp_transition,
 #     MaskedEpsGreedyPolicy,
 #     MaskedValuePolicy,
 
-include("writer.jl")
-include("storm_model_checking.jl")
+# include("writer.jl")
+# include("storm_model_checking.jl")
 # include("scheduler.jl")
 # include("masked_policies.jl")
 
