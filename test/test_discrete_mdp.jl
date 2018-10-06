@@ -51,7 +51,7 @@ b0 = initialstate_distribution(pmdp)
 # state_type(pmdp) == ProductState{Int64, Int64}
 # action_type(pmdp) == Int64
 
-# test_state_indexing(pmdp)
+# test_stateindexing(pmdp)
 # test_transition(pmdp)
 
 for s in states(pmdp)

@@ -26,7 +26,7 @@ function model_checking(mdp::MDP{S}, labeling::Dict{S, Vector{String}}, property
                         overwrite::Bool = false) where S
     model = parse_mdp_model(mdp, labeling, transition_file_name, labels_file_name, overwrite)
     properties = stormpy.parse_properties(property)
-    result = stormpy.model_checking(model, properties[1],  only_initial_states=false, extract_scheduler=true)
+    result = stormpy.model_checking(model, properties[1],  only_initialstates=false, extract_scheduler=true)
     @assert result[:result_for_all_states]
     return ModelCheckingResult(mdp, labeling, property, result)    
 end
@@ -74,12 +74,12 @@ function StormPolicy(mdp::MDP, result::ModelCheckingResult)
 end
 
 function value_vector(policy::StormPolicy, s)
-    si = state_index(policy.mdp, s)
+    si = stateindex(policy.mdp, s)
     return policy.risk_mat[si, :]
 end
 
 function value(policy::StormPolicy, s)
-    si = state_index(policy.mdp, s)
+    si = stateindex(policy.mdp, s)
     return policy.risk_vec[si]
 end
 
@@ -126,7 +126,7 @@ function get_state_action_proba(mdp::MDP, P::Vector{Float64})
             dist = transition(mdp, s, a)
             for (sp, p) in  weighted_iterator(dist)
                 p == 0.0 ? continue : nothing # skip if zero prob
-                spi = state_index(mdp, sp)
+                spi = stateindex(mdp, sp)
                 P_sa[si, ai] += p * P[spi]
             end
         end

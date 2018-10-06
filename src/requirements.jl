@@ -1,6 +1,6 @@
 ## POMDP requirements
-# state_index
-# action_index
+# stateindex
+# actionindex
 # action_type
 # actions(mdp)
 # value(policy, s, a)

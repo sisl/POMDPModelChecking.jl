@@ -37,11 +37,11 @@ function POMDPs.action(policy::MaskedValuePolicy{M}, s) where M
 end
 
 function best_action(acts::Vector{A}, policy::ValuePolicy{A, M}, s) where {A,M}
-    si = state_index(policy.mdp, s)
+    si = stateindex(policy.mdp, s)
     best_ai = 1
     best_val = policy.value_table[si, best_ai]
     for a in acts
-        ai = action_index(policy.mdp, a)
+        ai = actionindex(policy.mdp, a)
         val =  policy.value_table[si, ai]
         if val > best_val
             best_ai = ai 

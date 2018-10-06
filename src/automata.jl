@@ -6,7 +6,7 @@ struct BuchiAutomata{Q, A} <: Automata{Q, A}
     states::Vector{Q}
     alphabet::Vector{A}
     transition::Dict{Tuple{Int64, Set{A}}, Int64} # use custom struct for transitions?
-    initial_state::Q
+    initialstate::Q
     acceptance::Set{Q}
     property::String
 end
@@ -15,7 +15,7 @@ struct RabinAutomata{Q, A} <: Automata{Q, A}
     states::Vector{Q}
     alphabet::Vector{A}
     transition::Dict{Tuple{Int64, Set{A}}, Int64} # use custom struct for transitions?
-    initial_state::Q
+    initialstate::Q
     inf::Set{Q} # states that must be visited infinitely often 
     fin::Set{Q} # states that must be visited finitely often
     property::String
@@ -82,7 +82,7 @@ function hoa2buchi(file_name::String)
     property = ""
     n_states = 0
     states = Vector{Int64}()
-    initial_state = 0
+    initialstate = 0
     alphabet = Vector{String}()
     n_inputs = 0
     transition = Dict{Tuple{Int64, Set{String}}, Int64}()
@@ -103,7 +103,7 @@ function hoa2buchi(file_name::String)
                 n_states = parse(Int64, match(r"\d+", l).match)
                 states = 1:n_states
             elseif occursin("Start", l)
-                initial_state = parse(Int64, match(r"\d+", l).match) + 1
+                initialstate = parse(Int64, match(r"\d+", l).match) + 1
             elseif occursin(l, "name")
                 name = match(r"\"(.*?)\"", l).match
                 property = name[2:end-1] # remove quotes
@@ -143,7 +143,7 @@ function hoa2buchi(file_name::String)
             ln += 1            
         end
     end
-    return BuchiAutomata{Int64, String}(states, alphabet, transition, initial_state, acceptance, property)
+    return BuchiAutomata{Int64, String}(states, alphabet, transition, initialstate, acceptance, property)
 end
 
 function hoa2rabin(file_name::String)
@@ -151,7 +151,7 @@ function hoa2rabin(file_name::String)
     property = ""
     n_states = 0
     states = Vector{Int64}()
-    initial_state = 0
+    initialstate = 0
     alphabet = Vector{String}()
     n_inputs = 0
     transition = Dict{Tuple{Int64, Set{String}}, Int64}()
@@ -175,7 +175,7 @@ function hoa2rabin(file_name::String)
                 n_states = parse(Int64, match(r"\d+", l).match)
                 states = 1:n_states
             elseif occursin("Start", l)
-                initial_state = parse(Int64, match(r"\d+", l).match) + 1
+                initialstate = parse(Int64, match(r"\d+", l).match) + 1
             elseif occursin("name", l)
                 name = match(r"\"(.*?)\"", l).match
                 property = name[2:end-1] # remove quotes
@@ -227,7 +227,7 @@ function hoa2rabin(file_name::String)
             ln += 1            
         end
     end
-    return RabinAutomata{Int64, String}(states, alphabet, transition, initial_state, inf, fin, property)
+    return RabinAutomata{Int64, String}(states, alphabet, transition, initialstate, inf, fin, property)
 end
         
 function parse_alphabet(l::String)

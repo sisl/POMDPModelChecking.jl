@@ -34,7 +34,7 @@ function POMDPs.solve(solver::ModelCheckingSolver, problem::M) where M<:Union{MD
         accepting_states!(pmdp, verbose=verbose) # compute the maximal end components via a graph analysis
     end
     policy = solve(solver.solver, pmdp) # solve using your favorite method
-    return ModelCheckingPolicy(policy, pmdp, automata.initial_state)
+    return ModelCheckingPolicy(policy, pmdp, automata.initialstate)
 end
 
 function POMDPs.action(policy::ModelCheckingPolicy, s)
@@ -68,12 +68,12 @@ function value_vector(policy::ModelCheckingPolicy,  s)
 end
 
 function value_vector(policy::ValueIterationPolicy,  s)
-    si = state_index(policy.mdp, s)
+    si = stateindex(policy.mdp, s)
     return policy.qmat[si, :]
 end
 
 function reset_memory!(policy::ModelCheckingPolicy)
-    policy.memory = policy.mdp.automata.initial_state
+    policy.memory = policy.mdp.automata.initialstate
 end
 
 function update_memory!(policy::ModelCheckingPolicy, s)

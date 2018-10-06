@@ -23,6 +23,6 @@ function Scheduler(mdp::MDP{S, A}, py_scheduler::PyObject) where {S,A}
 end
 
 function POMDPs.action(policy::Scheduler{S, A}, s::S) where {S,A}
-    si = state_index(policy.mdp, s)
+    si = stateindex(policy.mdp, s)
     return policy.scheduler[si]
 end

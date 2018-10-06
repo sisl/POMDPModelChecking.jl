@@ -16,7 +16,7 @@ function label_grid_world(mdp::GridWorld)
 end
 
 
-function POMDPs.initial_state_distribution(mdp::GridWorld)
+function POMDPs.initialstate_distribution(mdp::GridWorld)
     return SparseCat(states(mdp), 1/n_states(mdp)*ones(n_states(mdp)))
 end
 

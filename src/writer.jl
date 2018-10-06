@@ -20,13 +20,13 @@ function write_mdp_transition(mdp::MDP, filename::String="mdp.tra")
     open(filename, "w") do f
         write(f, "mdp \n")
         for s in states
-            si = state_index(mdp, s)
+            si = stateindex(mdp, s)
             si -= 1 # 0-indexed
             for a in actions
-                ai = action_index(mdp, a) - 1
+                ai = actionindex(mdp, a) - 1
                 d = transition(mdp, s, a)
                 for (sp, p) in weighted_iterator(d)
-                    spi = state_index(mdp, sp) - 1
+                    spi = stateindex(mdp, sp) - 1
                     p == 0.0 ? continue : nothing
                     line = string(si, " ", ai, " ", spi, " ", p, "\n")
                     write(f, line)
@@ -71,7 +71,7 @@ function write_mdp_labels{S, A}(mdp::MDP{S, A}, labeling::Dict{S, Vector{String}
         # states must be sorted by index
         for (i, s) in enumerate(ordered_states(mdp))
             if haskey(labeling, s)
-                si = state_index(mdp, s) - 1 #0 indexed
+                si = stateindex(mdp, s) - 1 #0 indexed
                 write(f, string(si, " "))
                 for lab in labeling[s]
                     write(f, lab, " ")

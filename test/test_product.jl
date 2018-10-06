@@ -2,9 +2,9 @@ using POMDPModels, POMDPs, POMDPToolbox
 using MDPModelChecking
 
 # test state indexing 
-function test_state_indexing(problem::ProductMDP)
+function test_stateindexing(problem::ProductMDP)
     for (i,s) in enumerate(states(pmdp))
-        si = state_index(pmdp, s)
+        si = stateindex(pmdp, s)
         if si != i
             return false
         end
@@ -44,7 +44,7 @@ function MDPModelChecking.labels(mdp::GridWorld, s::GridWorldState)
     return labeling
 end
 
-function POMDPs.initial_state_distribution(mdp::GridWorld)
+function POMDPs.initialstate_distribution(mdp::GridWorld)
     states = [GridWorldState(1, y) for y=1:mdp.size_y]
     return SparseCat(states, 1/length(states)*ones(length(states)))
 end
@@ -68,7 +68,7 @@ n_actions(pmdp) == length(action_space)
 statetype(pmdp) == ProductState{GridWorldState, Int64}
 action_type(pmdp) == Symbol
 
-test_state_indexing(pmdp)
+test_stateindexing(pmdp)
 test_transition(pmdp) 
 
 for s in states(pmdp)
@@ -97,15 +97,15 @@ util = policy.util
 # post process 
 reach_prob = zeros(n_states(pmdp.mdp))
 for (i, s) in enumerate(ordered_states(pmdp.mdp))
-    ps = ProductState(s, pmdp.automata.initial_state)
-    psi = state_index(pmdp, ps)
+    ps = ProductState(s, pmdp.automata.initialstate)
+    psi = stateindex(pmdp, ps)
     reach_prob[i] = util[psi]
     if i == 29
         println(s)
         println(ps)
         println(util[psi])
         ps2 = ProductState(s, 1)
-        psi2 = state_index(pmdp, ps2)
+        psi2 = stateindex(pmdp, ps2)
         println(util[psi2])
     end
 end

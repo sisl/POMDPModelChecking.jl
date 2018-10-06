@@ -59,7 +59,7 @@ end
 #             dist = transition(mdp, s, a)
 #             for (sp, p) in  weighted_iterator(dist)
 #                 p == 0.0 ? continue : nothing # skip if zero prob
-#                 spi = state_index(mdp, sp)
+#                 spi = stateindex(mdp, sp)
 #                 P_sa[si, ai] += p * P[spi]
 #             end
 #         end
@@ -107,7 +107,7 @@ end
 # function safe_actions{M, A, S}(mask::SafetyMask{M,A}, s::S)
 #     safe_acts = A[]
 #     sizehint!(safe_acts, n_actions(mask.mdp))
-#     si = state_index(mask.mdp, s)
+#     si = stateindex(mask.mdp, s)
 #     safe = mask.risk_vec[si] > mask.threshold ? true : false
 #     if !safe # follow safe controller
 #         push!(safe_acts, mask.actions[indmax(mask.risk_mat[si, :])])
@@ -130,9 +130,9 @@ end
 # function initial_probability(mdp::MDP, result::ModelCheckingResult)
 #     P = get_proba(mdp, result)
 #     p_init = 0.
-#     d0 = initial_state_distribution(mdp)
+#     d0 = initialstate_distribution(mdp)
 #     for (s, p) in weighted_iterator(d0)
-#         si = state_index(mdp, s)
+#         si = stateindex(mdp, s)
 #         p_init += p*P[si]
 #     end
 #     return p_init 

@@ -23,12 +23,12 @@ function maximal_end_components(mdp::M; verbose=false) where {M <: Union{MDP, PO
             scc = strongly_connected_components(sub_g)
             for component in scc                  
                 # map bag to state indices
-                state_index_component = sub_state_space[component]
+                stateindex_component = sub_state_space[component]
                 # check that component is not trivial (is at least a cycle)
                 if length(component) == 1 && !has_edge(sub_g, component[1], component[1])
                     continue # skip trivial components
                 end
-                push!(MECnew, state_index_component)
+                push!(MECnew, stateindex_component)
             end
         end
         verbose ? println("finished $DEBUG_STEP step, old MEC $(length(MEC)) -> new MEC $(length(MECnew))") : nothing

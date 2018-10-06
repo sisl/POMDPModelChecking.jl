@@ -77,7 +77,7 @@ function POMDPs.initialstate_distribution(problem::ProductPOMDP{S, A, O, Q, T}) 
     b0 = initialstate_distribution(problem.pomdp)
     new_probs = Float64[]
     new_vals = Vector{ProductState{S, Q}}(undef,0)
-    q0 = problem.automata.initial_state
+    q0 = problem.automata.initialstate
     for (s0, p) in weighted_iterator(b0)
         push!(new_vals, ProductState(s0, q0))
         push!(new_probs, p)
