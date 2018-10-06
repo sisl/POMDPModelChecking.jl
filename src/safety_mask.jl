@@ -10,7 +10,7 @@ function safe_actions(mask::M, s) where M <: SafetyMask
     vals = value_vector(mask.policy, s)
     safe = maximum(vals) > mask.threshold ? true : false
     if !safe # follow safe controller
-        push!(safe_acts, actions(mask.mdp)[indmax(vals)])
+        push!(safe_acts, actions(mask.mdp)[argmax(vals)])
     else
         for (j, a) in enumerate(actions(mask.mdp))
             if vals[j] > mask.threshold
@@ -73,7 +73,7 @@ end
 # function POMDPToolbox.VectorPolicy{S, A}(mdp::MDP{S, A}, result::ModelCheckingResult{S})
 #     P = get_proba(mdp, result)
 #     P_sa = get_state_action_proba(mdp, P)
-#     Pmax, amax = findmax(P_sa, 2)
+#     Pmax, amax = fargmax(P_sa, 2)
 #     amax = ind2sub.((size(P_sa),), amax)
 #     actions = ordered_actions(mdp)
 #     act_vec = Vector{A}(n_states(mdp))
@@ -110,7 +110,7 @@ end
 #     si = stateindex(mask.mdp, s)
 #     safe = mask.risk_vec[si] > mask.threshold ? true : false
 #     if !safe # follow safe controller
-#         push!(safe_acts, mask.actions[indmax(mask.risk_mat[si, :])])
+#         push!(safe_acts, mask.actions[argmax(mask.risk_mat[si, :])])
 #     else
 #         for (j, a) in enumerate(mask.actions)
 #             if mask.risk_mat[si, j] > mask.threshold

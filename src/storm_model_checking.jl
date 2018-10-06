@@ -86,7 +86,7 @@ end
 function action(policy::StormPolicy, s)
     acts = actions(mdp)
     vals = value_vector(policy, s)
-    return acts[indmax(vals)]
+    return acts[argmax(vals)]
 end
 
     
