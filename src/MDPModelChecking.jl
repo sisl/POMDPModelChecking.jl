@@ -41,8 +41,7 @@ export
     reset_memory!,
     value_vector
 
-include("product_mdp.jl")
-include("product_pomdp.jl")
+include("product.jl")
 include("end_component.jl")
 include("model_checking_solver.jl")
 

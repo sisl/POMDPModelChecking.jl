@@ -34,7 +34,7 @@ function POMDPs.stateindex(autom::B, q::Int64) where B <: Automata
 end
 
 function POMDPs.n_states(autom::Union{BuchiAutomata, RabinAutomata})
-    return length(atuom.states)
+    return length(autom.states)
 end
 
 #  return true if there is a  transitions q, l, q' given q and l 
