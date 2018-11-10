@@ -48,8 +48,8 @@ b0 = initialstate_distribution(pmdp)
 # γ = discount(pmdp)
 # n_states(pmdp) == length(state_space)
 # n_actions(pmdp) == length(action_space)
-# state_type(pmdp) == ProductState{Int64, Int64}
-# action_type(pmdp) == Int64
+# statetype(pmdp) == ProductState{Int64, Int64}
+# actiontype(pmdp) == Int64
 
 # test_stateindexing(pmdp)
 # test_transition(pmdp)

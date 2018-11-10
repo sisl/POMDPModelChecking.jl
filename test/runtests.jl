@@ -1,10 +1,27 @@
+using Revise
 using MDPModelChecking
+using POMDPs
+using POMDPModelTools
+using POMDPModels
+using POMDPTesting
 using Test
+
+@testset "automata parsing" begin
+    include("test_parsing.jl")
+end
+
+@testset "product MDP" begin 
+    include("test_product.jl")
+end
+
+# @testset "maximal end components" begin 
+#     include("test_mec.jl")
+# end
 
 function label_grid_world(mdp::GridWorld)
     good_states = mdp.reward_states[mdp.reward_values .> 0.]
     bad_states = mdp.reward_states[mdp.reward_values .< 0.]
-    labeling = Dict{state_type(mdp), Vector{String}}()
+    labeling = Dict{statetype(mdp), Vector{String}}()
     for s in good_states
         labeling[s] = ["good"]
     end

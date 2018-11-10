@@ -9,7 +9,7 @@ mdp.bounds_penalty = 0.
 function MDPModelChecking.labels(mdp::GridWorld, s::GridWorldState)
     good_states = mdp.reward_states[mdp.reward_values .> 0.]
     bad_states = mdp.reward_states[mdp.reward_values .< 0.]
-    labeling = Dict{state_type(mdp), Vector{String}}()
+    labeling = Dict{statetype(mdp), Vector{String}}()
     if s in bad_states
         return ["bad"]
 #     elseif s == GridWorldState(0, 0, true)

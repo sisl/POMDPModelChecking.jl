@@ -1,7 +1,4 @@
-using MDPModelChecking
-
-# build product MDP from LTL formula
-
+# Parse formulat
 # allowed symbols
 # Unary operator: !, F, G, X
 # Binary operator: U, R , W, M
@@ -13,9 +10,9 @@ ltl2tgba(property, "test.hoa") # should translate to DBA
 automata = hoa2buchi("test.hoa")
 
 
-property = "FGa"
-ltl2tgba(property, "test.hoa") # should translate to DRA
-automata = hoa2rabin("test.hoa")
+# property = "FGa"
+# ltl2tgba(property, "test.hoa") # should translate to DRA
+# automata = hoa2rabin("test.hoa")
 
 # property = "Ga|Gb|Gc"
 
