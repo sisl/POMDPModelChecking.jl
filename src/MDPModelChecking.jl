@@ -13,6 +13,14 @@ using DiscreteValueIteration
 
 # @pyimport stormpy
 
+export
+    ReachabilitySolver,
+    ReachabilityPolicy,
+    ReachabilityMDP,
+    ReachabilityPOMDP
+
+include("reachability.jl")
+
 export 
 
     # automata processing

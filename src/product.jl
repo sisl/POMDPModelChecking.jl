@@ -17,28 +17,28 @@ mutable struct ProductMDP{S, A, Q, T} <: MDP{ProductState{S, Q}, A}
     problem::MDP{S, A}
     automata::Automata{Q, T}
     accepting_states::Set{ProductState{S, Q}} 
+    sink_state::ProductState{S, Q}
 end
 
-function ProductMDP(mdp::MDP{S, A}, automata::Automata{Q, T}) where {S, A, Q, T}
-    return ProductMDP(mdp, automata, Set{ProductState{S, Q}}())
+function ProductMDP(mdp::MDP{S}, automata::Automata{Q}, sink_state::ProductState{S,Q}) where {S,Q}
+    ProductMDP(mdp, automata, Set{ProductState{S, Q}}(), sink_state)
 end
 
 mutable struct ProductPOMDP{S, A, O, Q, T} <: POMDP{ProductState{S, Q}, A, O}
     problem::POMDP{S, A, O}
     automata::Automata{Q, T}
     accepting_states::Set{ProductState{S, Q}} 
+    sink_state::ProductState{S, Q}
 end
 
-
-function ProductPOMDP(pomdp::POMDP{S, A, O}, automata::Automata{Q, T}) where {S, A, O, Q, T}
-    return ProductPOMDP(pomdp, automata, Set{ProductState{S, Q}}())
+function ProductPOMDP(pomdp::POMDP{S}, automata::Automata{Q}, sink_state::ProductState{S,Q}) where {S,Q}
+    ProductPOMDP(pomdp, automata, Set{ProductState{S, Q}}(), sink_state)
 end
-
 
 # should be implemented by the problem writer
 """
 Returns the labels associated with state s 
-labels(mdp::M, s) where {M <: Union{MDP,POMDP}}
+labels(mdp::M, s, a) where {M <: Union{MDP,POMDP}}
 """
 function labels end
 
@@ -71,8 +71,10 @@ function POMDPs.reward(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState{S, 
     return 0.0
 end
 
+POMDPs.reward(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState{S, Q}, a::A) where {S, A, Q} = reward(mdp, s, a, s)
+
 function POMDPs.isterminal(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState{S, Q}) where {S, Q}
-    if s ∈ mdp.accepting_states
+    if s ∈ mdp.accepting_states || s == mdp.sink_state
         return true
     end
     return false
@@ -87,7 +89,10 @@ function POMDPs.transition(problem::Union{ProductMDP, ProductPOMDP}, state::Prod
     new_probs = Float64[]
     new_vals = Vector{statetype(problem)}()
     true_lab = ["t"]
-    l = labels(problem.problem, state.s)
+    if state ∈ problem.accepting_states
+        return SparseCat{Vector{statetype(problem)}, Vector{Float64}}([problem.sink_state], [1.0])
+    end
+    l = labels(problem.problem, state.s, action)
     for (sp, p) in weighted_iterator(d)
         if p == 0.
             continue
@@ -101,6 +106,9 @@ function POMDPs.transition(problem::Union{ProductMDP, ProductPOMDP}, state::Prod
             push!(new_probs, p)
             push!(new_vals, ProductState(sp, qp))
         end
+    end
+    if isempty(new_vals)
+        return SparseCat{Vector{statetype(problem)}, Vector{Float64}}([problem.sink_state], [1.0])
     end
     normalize!(new_probs, 1)
     return SparseCat{Vector{statetype(problem)}, Vector{Float64}}(new_vals, new_probs)
@@ -129,16 +137,20 @@ function POMDPs.states(problem::Union{ProductMDP, ProductPOMDP})
             push!(state_space, ProductState(s, q))
         end
     end
+    push!(state_space, problem.sink_state)
     return state_space
 end
 
 POMDPs.actions(problem::Union{ProductMDP, ProductPOMDP}) = actions(problem.problem)
 
-POMDPs.n_states(problem::Union{ProductMDP, ProductPOMDP}) = n_states(problem.problem)*length(problem.automata.states)
+POMDPs.n_states(problem::Union{ProductMDP, ProductPOMDP}) = n_states(problem.problem)*length(problem.automata.states) + 1
 
 POMDPs.n_actions(problem::Union{ProductMDP, ProductPOMDP}) = n_actions(problem.problem)
 
-function POMDPs.stateindex(problem::Union{ProductMDP, ProductPOMDP}, s::S) where S 
+function POMDPs.stateindex(problem::Union{ProductMDP, ProductPOMDP}, s::ProductState{S,Q}) where {S,Q} 
+    if s == problem.sink_state 
+        return n_states(problem)
+    end
     si = stateindex(problem.problem, s.s)
     qi = stateindex(problem.automata, s.q)
     return LinearIndices((length(problem.automata.states), n_states(problem.problem)))[qi, si]
@@ -148,7 +160,8 @@ POMDPs.statetype(p::Union{ProductMDP, ProductPOMDP}) = ProductState{statetype(p.
 
 POMDPs.actiontype(p::Union{ProductMDP, ProductPOMDP}) = actiontype(p.problem)
 
-POMDPs.actionindex(p::Union{ProductMDP, ProductPOMDP}, a::A) where A = actionindex(p.problem, a) 
+POMDPs.actionindex(p::Union{ProductMDP, ProductPOMDP}, a) = actionindex(p.problem, a) 
+POMDPs.actionindex(p::Union{ProductMDP, ProductPOMDP}, a::Int64) = actionindex(p.problem, a) # to avoid clashes with POMDPModelTools
 
 POMDPs.convert_a(T::Type{V}, a, p::Union{ProductMDP, ProductPOMDP}) where V<:AbstractArray = convert_a(T, a, p.problem)
 POMDPs.convert_a(T::Type{A}, vec::V, p::Union{ProductMDP, ProductPOMDP}) where {A,V<:AbstractArray} = convert_a(T, vec, p.problem)
@@ -170,12 +183,13 @@ end
 
 ## POMDP Only 
 
-POMDPs.observation(p::ProductPOMDP, s::S) where S = observation(p.pomdp, s)
-POMDPs.observation(p::ProductPOMDP, a::A, s::S) where {S,A} = observation(p.pomdp, a, s)
-POMDPs.observation(p::ProductPOMDP, s::S, a::A, sp::S) where {S,A}= observation(p.pomdp, s, a, sp)
-POMDPs.observations(p::ProductPOMDP) = observations(p.pomdp)
-POMDPs.n_observations(p::ProductPOMDP) = n_observations(p.pomdp)
-POMDPs.obsindex(p::ProductPOMDP, o::O) where O = obsindex(p.pomdp, o)
+POMDPs.observation(p::ProductPOMDP, s::ProductState{S, Q}) where {S,Q} = observation(p.problem, s.s)
+POMDPs.observation(p::ProductPOMDP, a::A, s::ProductState{S, Q}) where {S,Q,A} = observation(p.problem, a, s.s)
+POMDPs.observation(p::ProductPOMDP, s::ProductState{S, Q}, a::A, sp::ProductState{S, Q}) where {S,Q,A}= observation(p.problem, s.s, a, sp.s)
+POMDPs.observations(p::ProductPOMDP) = observations(p.problem)
+POMDPs.n_observations(p::ProductPOMDP) = n_observations(p.problem)
+POMDPs.obsindex(p::ProductPOMDP, o::O) where O = obsindex(p.problem, o)
+POMDPs.obsindex(p::ProductPOMDP, o::Bool) = obsindex(p.problem, o) # to avoid clash with POMDPModelTools
 
-POMDPs.convert_o(T::Type{V}, o, p::ProductPOMDP) where V<:AbstractArray = convert_o(T, o, p.pomdp)
-POMDPs.convert_o(T::Type{O}, vec::V, p::ProductPOMDP) where {O,V<:AbstractArray} = convert_o(T, vec, p.pomdp)
+POMDPs.convert_o(T::Type{V}, o, p::ProductPOMDP) where V<:AbstractArray = convert_o(T, o, p.problem)
+POMDPs.convert_o(T::Type{O}, vec::V, p::ProductPOMDP) where {O,V<:AbstractArray} = convert_o(T, vec, p.problem)

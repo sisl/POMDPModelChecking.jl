@@ -25,8 +25,9 @@ function POMDPs.solve(solver::ModelCheckingSolver, problem::M) where M<:Union{MD
         automata = hoa2rabin(solver.automata_file)
     end
     pmdp = nothing
+    sink_state = ProductState(first(states(problem)), -1)
     if isa(problem, POMDP)
-        pmdp = ProductPOMDP(problem, automata)
+        pmdp = ProductPOMDP(problem, automata, sink_state)
     else
         pmdp = ProductMDP(problem, automata) # build product mdp x automata
     end
@@ -39,7 +40,7 @@ end
 
 function POMDPs.action(policy::ModelCheckingPolicy, s)
     a = action(policy.policy, ProductState(s, policy.memory))
-    update_memory!(policy, s)
+    update_memory!(policy, s, a)
     return a
 end
 
@@ -59,25 +60,20 @@ function POMDPs.value(policy::ModelCheckingPolicy, s::ProductState{S, Q}) where 
     end
 end
 
-function value_vector(policy::ModelCheckingPolicy,  s)
+function POMDPPolicies.actionvalues(policy::ModelCheckingPolicy,  s)
     if s ∈ policy.mdp.accepting_states
         return ones(n_actions(policy.mdp))
     else
-        return value_vector(policy.policy, s)
+        return actionvalues(policy.policy, s)
     end
-end
-
-function value_vector(policy::ValueIterationPolicy,  s)
-    si = stateindex(policy.mdp, s)
-    return policy.qmat[si, :]
 end
 
 function reset_memory!(policy::ModelCheckingPolicy)
     policy.memory = policy.mdp.automata.initialstate
 end
 
-function update_memory!(policy::ModelCheckingPolicy, s)
-    l = labels(policy.mdp.mdp, s)
+function update_memory!(policy::ModelCheckingPolicy, s, a)
+    l = labels(policy.mdp.mdp, s, a)
     if has_transition(policy.mdp.automata, policy.memory, l)
         policy.memory = transition(policy.mdp.automata, policy.memory, l)
     end
