@@ -11,7 +11,7 @@ mutable struct ModelCheckingPolicy{P <: Policy, M <:Union{ProductMDP, ProductPOM
 end
 
 # NOTE: the returned value function will be 0. at the accepting states instead of 1, this is overriden by the implementation 
-# of POMDPs.value below.
+# of POMDPs.value below but only for MDPs. A solution would be to add a sink state
 function POMDPs.solve(solver::ModelCheckingSolver, problem::M) where M<:Union{MDP,POMDP}
     verbose = solver.verbose
     # parse formula first 

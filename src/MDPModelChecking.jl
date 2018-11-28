@@ -7,6 +7,7 @@ using POMDPPolicies
 using LightGraphs
 using Parameters
 using Random
+using DiscreteValueIteration
 using LinearAlgebra
 using Spot
 
