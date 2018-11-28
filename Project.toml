@@ -14,12 +14,15 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Spot = "f11abc24-ce50-11e8-2475-af6658d13f2b"
 
 [extras]
+BeliefUpdaters = "8bb6e9a1-7d73-552c-a44a-e5dc5634aac4"
+ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 Compose = "a81c6b42-2e10-5240-aca2-a61377ecd94b"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 POMDPModels = "355abbd5-f08e-5560-ac9e-8b5f2592a0ca"
 POMDPTesting = "92e6a534-49c2-5324-9027-86e3c861ab81"
 QMDP = "3aa3ecc9-5a5d-57c8-8188-3e47bd8068d2"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Compose", "LinearAlgebra", "POMDPModels", "POMDPTesting", "QMDP", "Test"]
+test = ["BeliefUpdaters", "ColorSchemes", "Compose", "LinearAlgebra", "POMDPModels", "POMDPTesting", "QMDP", "StaticArrays", "Test"]
