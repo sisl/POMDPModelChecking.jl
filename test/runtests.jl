@@ -93,3 +93,20 @@ end
     trans_prob_consistency_check(ppomdp) 
     obs_prob_consistency_check(ppomdp)
 end
+
+@testset begin "MDP Model Checking"
+    mdp = SimpleGridWorld(size=(10,10), terminate_from=Set([]), tprob=0.7);
+
+    LABELLED_STATES = Dict(GWPos(3,7) => :a, GWPos(8,5) => :b, GWPos(4,3) => :c)
+
+    function MDPModelChecking.labels(mdp::SimpleGridWorld, s, a)
+        if haskey(LABELLED_STATES, s)
+            return tuple(LABELLED_STATES[s])
+        else
+            return ()
+        end
+    end
+
+    solver = ModelCheckingSolver(property=ltl"(!c U b) & (!c U a)", solver=ValueIterationSolver(), verbose=true)
+    policy = solve(solver, mdp)
+end
