@@ -45,7 +45,6 @@ export
     # safety mask 
     SafetyMask,
     safe_actions,
-    value_vector,
     MaskedEpsGreedyPolicy,
     MaskedValuePolicy
 
