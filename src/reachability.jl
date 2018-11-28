@@ -63,7 +63,7 @@ POMDPs.observation(r::ReachabilityPOMDP, s, a) = observation(r.problem, s, a)
 POMDPs.observations(r::ReachabilityPOMDP) = observations(r.problem)
 POMDPs.obsindex(r::ReachabilityPOMDP, o) = obsindex(r.problem, o)
 POMDPs.n_observations(r::ReachabilityPOMDP) = n_observations(r.problem)
-POMDPs.obstype(r::ReachabilityPOMDP) = obstypr(r.problem)
+POMDPs.obstype(r::ReachabilityPOMDP) = obstype(r.problem)
 
 POMDPs.transition(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s, a) = transition(r.problem, s, a)
 
