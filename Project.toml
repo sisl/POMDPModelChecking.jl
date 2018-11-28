@@ -1,6 +1,6 @@
-name = "MDPModelChecking"
+name = "POMDPModelChecking"
 uuid = "abefb91b-a28c-5ab9-9bd9-026e532d7b0e"
-repo = "https://github.com/MaximeBouton/MDPModelChecking.jl"
+repo = "https://github.com/MaximeBouton/POMDPModelChecking.jl"
 version = "0.0.0"
 
 [deps]

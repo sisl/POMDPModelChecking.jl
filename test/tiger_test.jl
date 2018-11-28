@@ -1,5 +1,5 @@
 using Revise
-using MDPModelChecking
+using POMDPModelChecking
 using POMDPs
 using POMDPModels
 using POMDPSimulators
@@ -10,7 +10,7 @@ using POMCPOW
 
 pomdp = TigerPOMDP()
 
-function MDPModelChecking.labels(pomdp::TigerPOMDP, s::Bool, a::Int64)
+function POMDPModelChecking.labels(pomdp::TigerPOMDP, s::Bool, a::Int64)
     if (a == 1 && s) || (a == 2 && !s)
         return ["eaten"]
     elseif (a == 2 && s) || (a == 1 && !s)
