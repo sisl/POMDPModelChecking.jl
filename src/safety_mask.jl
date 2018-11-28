@@ -7,7 +7,7 @@ end
 function safe_actions(mask::M, s) where M <: SafetyMask
     A = actiontype(mask.mdp)
     safe_acts = A[]
-    vals = value_vector(mask.policy, s)
+    vals = actionvalues(mask.policy, s)
     safe = maximum(vals) > mask.threshold ? true : false
     if !safe # follow safe controller
         push!(safe_acts, actions(mask.mdp)[argmax(vals)])

@@ -2,35 +2,36 @@
 language: julia
 os:
   - linux
-  - osx
+
 julia:
   - 0.7
   - 1.0
-  - nightly
+
+env:
+  - CONDA_JL_VERSION="3" PYTHON=""
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-7
+    - python3-dev
+    - clang-3.9
+
+
 notifications:
   email: false
 git:
   depth: 99999999
 
-## uncomment the following lines to allow failures on nightly julia
-## (tests will run but not make your overall status red)
-#matrix:
-#  allow_failures:
-#  - julia: nightly
-
-## uncomment and modify the following lines to manually install system packages
-#addons:
-#  apt: # apt-get for linux
-#    packages:
-#    - gfortran
-#before_script: # homebrew for mac
-#  - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
-
 ## uncomment the following lines to override the default test script
-#script:
-#  - julia -e 'Pkg.clone(pwd()); Pkg.build("MDPModelChecking"); Pkg.test("MDPModelChecking"; coverage=true)'
+script:
+  - git clone https://github.com/JuliaRegistries/General  $(julia -e 'import Pkg; println(joinpath(Pkg.depots1(), "registries", "General"))')    
+  - git clone https://github.com/JuliaPOMDP/Registry  $(julia -e 'import Pkg; println(joinpath(Pkg.depots1(), "registries", "JuliaPOMDP"))')  
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - travis_wait julia --project --color=yes -e 'using Pkg; Pkg.add(PackageSpec(url="https://github.com/sisl/Spot.jl.git"))'
+  - julia --project --color=yes -e 'import Pkg; Pkg.build(); Pkg.test(coverage=true)'
 after_success:
-  # push coverage results to Coveralls
-  - julia -e 'cd(Pkg.dir("MDPModelChecking")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
-  # push coverage results to Codecov
-  - julia -e 'cd(Pkg.dir("MDPModelChecking")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  - julia --project -e 'import Pkg; Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
+  - julia --project -e 'import Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
