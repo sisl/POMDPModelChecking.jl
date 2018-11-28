@@ -1,3 +1,6 @@
+using PyCall
+# @pyimport stormpy
+
 struct ModelCheckingResult{S}
     mdp::MDP{S}
     labels::Dict{S, Vector{String}}

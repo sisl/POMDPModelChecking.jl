@@ -68,6 +68,8 @@ POMDPs.obstype(r::ReachabilityPOMDP) = obstypr(r.problem)
 POMDPs.transition(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s, a) = transition(r.problem, s, a)
 
 POMDPs.isterminal(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s) = (s ∈ r.reach) || (s ∈ r.avoid)
+POMDPs.initialstate_distribution(r::Union{ReachabilityMDP, ReachabilityPOMDP}) = initialstate_distribution(r.problem)
+POMDPs.initialstate(r::Union{ReachabilityMDP, ReachabilityPOMDP}, rng::AbstractRNG) = initialstate(r.problem, rng)
 
 POMDPs.reward(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s) = float(s ∈ r.reach)
 POMDPs.reward(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s, a) = reward(r, s)

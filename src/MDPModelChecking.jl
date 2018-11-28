@@ -8,10 +8,7 @@ using LightGraphs
 using Parameters
 using Random
 using LinearAlgebra
-using DiscreteValueIteration
-# using PyCall
-
-# @pyimport stormpy
+using Spot
 
 export
     ReachabilitySolver,
@@ -22,35 +19,26 @@ export
 include("reachability.jl")
 
 export 
+    ProductState,
+    ProductMDP,
+    ProductPOMDP,
+    labels
 
-    # automata processing
-    BuchiAutomata,
-    RabinAutomata,
-    acceptance_condition,
-    ltl2tgba,
-    automata_type,
-    hoa2buchi,
-    hoa2rabin
-
-include("automata.jl")
+include("product.jl")
 
 export
-    # graph analysis and product MDP
+    # graph analysis 
     maximal_end_components,
     mdp_to_graph,
     sub_mdp,
-    ProductState,
-    ProductMDP, 
-    ProductPOMDP,
-    labels,
-    accepting_states!,
-    ModelCheckingSolver,
-    ModelCheckingPolicy,
-    reset_memory!,
-    value_vector
+    accepting_states!
 
-include("product.jl")
 include("end_component.jl")
+
+export 
+    ModelCheckingSolver,
+    ModelCheckingPolicy
+
 include("model_checking_solver.jl")
 
 export
@@ -65,6 +53,7 @@ export
 include("safety_mask.jl")
 include("masked_policies.jl")
 
+# broken for now
 # export     write_mdp_transition,
 #     write_mdp_labels,
 #     parse_mdp_model, 
