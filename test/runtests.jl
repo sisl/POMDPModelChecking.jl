@@ -1,4 +1,4 @@
-using MDPModelChecking
+using POMDPModelChecking
 using POMDPs
 using POMDPModels
 using DiscreteValueIteration
@@ -50,7 +50,7 @@ end
 
     LABELLED_STATES = Dict(GWPos(3,7) => :a, GWPos(8,5) => :b, GWPos(4,3) => :c)
 
-    function MDPModelChecking.labels(mdp::SimpleGridWorld, s, a)
+    function POMDPModelChecking.labels(mdp::SimpleGridWorld, s, a)
         if haskey(LABELLED_STATES, s)
             return tuple(LABELLED_STATES[s])
         else
@@ -72,7 +72,7 @@ end
     trans_prob_consistency_check(pmdp) 
 
     include("blind_gridworld.jl")
-    MDPModelChecking.labels(pomdp::BlindGridWorld, s, a) = labels(pomdp.simple_gw, s, a)
+    POMDPModelChecking.labels(pomdp::BlindGridWorld, s, a) = labels(pomdp.simple_gw, s, a)
     pomdp = BlindGridWorld(size=(10,10), 
                            exit=GWPos(10,1), 
                            simple_gw=SimpleGridWorld(size=(10,10), terminate_from=Set([GWPos(9,3), GWPos(4,3)]), tprob=0.7))
@@ -99,7 +99,7 @@ end
 
     LABELLED_STATES = Dict(GWPos(3,7) => :a, GWPos(8,5) => :b, GWPos(4,3) => :c)
 
-    function MDPModelChecking.labels(mdp::SimpleGridWorld, s, a)
+    function POMDPModelChecking.labels(mdp::SimpleGridWorld, s, a)
         if haskey(LABELLED_STATES, s)
             return tuple(LABELLED_STATES[s])
         else

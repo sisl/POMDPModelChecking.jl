@@ -1,4 +1,4 @@
-using MDPModelChecking
+using POMDPModelChecking
 using POMDPModels
 using POMDPs
 # discrete MDP 1 

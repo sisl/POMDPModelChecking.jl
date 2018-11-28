@@ -1,10 +1,10 @@
-# MDPModelChecking.jl
+# POMDPModelChecking.jl
 
-[![Build Status](https://travis-ci.org/MaximeBouton/MDPModelChecking.jl.svg?branch=master)](https://travis-ci.org/MaximeBouton/MDPModelChecking.jl)
+[![Build Status](https://travis-ci.org/MaximeBouton/POMDPModelChecking.jl.svg?branch=master)](https://travis-ci.org/MaximeBouton/POMDPModelChecking.jl)
 
-[![Coverage Status](https://coveralls.io/repos/MaximeBouton/MDPModelChecking.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/MaximeBouton/MDPModelChecking.jl?branch=master)
+[![Coverage Status](https://coveralls.io/repos/MaximeBouton/POMDPModelChecking.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/MaximeBouton/POMDPModelChecking.jl?branch=master)
 
-[![codecov.io](http://codecov.io/github/MaximeBouton/MDPModelChecking.jl/coverage.svg?branch=master)](http://codecov.io/github/MaximeBouton/MDPModelChecking.jl?branch=master)
+[![codecov.io](http://codecov.io/github/MaximeBouton/POMDPModelChecking.jl/coverage.svg?branch=master)](http://codecov.io/github/MaximeBouton/POMDPModelChecking.jl?branch=master)
 
 This package provides support for performing verification and policy synthesis in POMDP from LTL formulas. It relies on [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl) for expressing the model and [Spot.jl](https://github.com/sisl/Spot.jl) for manipulating LTL formulas. 
 
@@ -13,7 +13,7 @@ This package provides support for performing verification and policy synthesis i
 
 ```julia
 using Pkg
-Pkg.add(PackageSpec(url="https://github.com/MaximeBouton/MDPModelChecking.jl"))
+Pkg.add(PackageSpec(url="https://github.com/MaximeBouton/POMDPModelChecking.jl"))
 ```
 
 To install `spot` see https://github.com/sisl/Spot.jl and https://spot.lrde.epita.fr/install.html.
