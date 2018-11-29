@@ -1,3 +1,5 @@
+__precompile__(false)
+
 module POMDPModelChecking
 
 # package code goes here
