@@ -13,6 +13,7 @@ This package provides support for performing verification and policy synthesis i
 
 ```julia
 using Pkg
+Pkg.add(PackageSpec(url="https://github.com/sisl/Spot.jl"))
 Pkg.add(PackageSpec(url="https://github.com/MaximeBouton/POMDPModelChecking.jl"))
 ```
 
