@@ -19,7 +19,7 @@ using ColorSchemes
 using Parameters
 using BeliefUpdaters
 
-@with_kw struct BlindGridWorld <: POMDP{GWPos, Symbol, GWPos} #Bool
+@with_kw struct BlindGridWorld <: POMDP{GWPos, Symbol, GWPos} #GWPos/Bool
     size::Tuple{Int64, Int64} = (10,10)
     exit::GWPos = GWPos(10,1)
     simple_gw::SimpleGridWorld = SimpleGridWorld(size=size, rewards=Dict(exit=>1.0), terminate_from=Set([exit]))
@@ -55,9 +55,9 @@ POMDPs.transition(pomdp::BlindGridWorld, s::AbstractVector{Int}, a::Symbol) = tr
 
 # function POMDPs.observation(pomdp::BlindGridWorld, a::Symbol, sp::AbstractVector{Int})
 #     if sp == pomdp.exit 
-#         return BoolDistribution(0.0)
+#         return BoolDistribution(0.5)
 #     else
-#         return BoolDistribution(0.0)
+#         return BoolDistribution(0.5)
 #     end
 # end
 
@@ -72,6 +72,9 @@ const NEIGHBORS_DIRECTIONS = Set([GWPos(0,1), GWPos(0,-1), GWPos(-1,0), GWPos(1,
                                   GWPos(1,1), GWPos(-1,1), GWPos(1,-1), GWPos(-1,-1)])
 
 function POMDPs.observation(pomdp::BlindGridWorld, a::Symbol, sp::AbstractVector{Int})
+    if sp == GWPos(-1,-1)
+        return SparseCat(states(pomdp), normalize!(ones(n_states(pomdp)), 1))
+    end
 
     neighbors = MVector{length(NEIGHBORS_DIRECTIONS) + 1, GWPos}(undef)
     neighbors[1] = sp
@@ -106,6 +109,19 @@ function deterministic_belief(pomdp, s)
     si = stateindex(pomdp, s)
     b[si] = 1.0
     return DiscreteBelief(pomdp, b)
+end
+
+function POMDPs.isterminal(pomdp::ProductPOMDP, b::DiscreteBelief)
+    belief_support = states(policy.problem)[findall(b.b .> 0)]
+    if ProductState(GWPos(8,5),4) ∈ belief_support || ProductState(GWPos(3,7), 3) ∈ belief_support 
+        return true
+    end
+    for s in belief_support
+        if !isterminal(pomdp, s)
+            return false 
+        end
+    end
+    return true
 end
 
 ## Rendering 
@@ -144,8 +160,9 @@ function POMDPModels.render(mdp::SimpleGridWorld, step::Union{NamedTuple,Dict};
         end
 
         if landmark != nothing 
-            if landmark(GWPos(x,y))
+            if landmark(GWPos(x,y))#haskey(landmark, GWPos(x,y))
                 push!(landmarks, compose(ctx, circle(0.5, 0.5, 0.3), fill("purple")))
+                # push!(landmarks, compose(ctx, text(0.5,0.5, landmark[GWPos(x,y)], hcenter, vcenter)))
             end
         end
 

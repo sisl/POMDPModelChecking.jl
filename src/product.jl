@@ -83,34 +83,41 @@ function POMDPs.isterminal(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState
     return false
 end
 
-POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 1.0
+POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 0.9
 
 # in the product MDP, some transitions are "undefined" because the automata does not allow them.
 # the transitions does not necessarily sums up to one!
 function POMDPs.transition(problem::Union{ProductMDP, ProductPOMDP}, state::ProductState{S, Q}, action::A) where {S, A, Q}
     d = transition(problem.problem, state.s, action) # regular mdp transition 
-    new_probs = Float64[]
-    new_vals = Vector{statetype(problem)}()
     if state ∈ problem.accepting_states || state == problem.sink_state
         return SparseCat{Vector{statetype(problem)}, Vector{Float64}}([problem.sink_state], [1.0])
     end
     l = labels(problem.problem, state.s, action)
-    for (sp, p) in weighted_iterator(d)
-        if p == 0.
-            continue
+    qp = nextstate(problem.automata, state.q, l)
+    if qp != nothing 
+        new_vals = Vector{ProductState{S,Q}}(undef, length(support(d)))
+        new_probs = Vector{Float64}(undef, length(support(d)))
+        for (i, sp) in enumerate(support(d))
+            new_vals[i] = ProductState(sp,qp)
+            new_probs[i] = pdf(d, sp)
         end
-        # l = labels(problem.problem, sp, action)
-        qp = nextstate(problem.automata, state.q, l)
-        if qp != nothing
-            push!(new_probs, p)
-            push!(new_vals, ProductState(sp, qp))
-        end
-    end
-    if isempty(new_vals)
+        return SparseCat{Vector{ProductState{S,Q}}, Vector{Float64}}(new_vals, new_probs)
+    # for (sp, p) in weighted_iterator(d)
+    #     if p == 0.
+    #         continue
+    #     end
+    #     # l = labels(problem.problem, sp, action)
+        
+    #     if qp != nothing
+    #         push!(new_probs, p)
+    #         push!(new_vals, ProductState(sp, qp))
+    #     end
+    # end
+    else
         return SparseCat{Vector{statetype(problem)}, Vector{Float64}}([problem.sink_state], [1.0])
     end
-    normalize!(new_probs, 1)
-    return SparseCat{Vector{statetype(problem)}, Vector{Float64}}(new_vals, new_probs)
+    # normalize!(new_probs, 1)
+    # return SparseCat{Vector{statetype(problem)}, Vector{Float64}}(new_vals, new_probs)
 end
 
 

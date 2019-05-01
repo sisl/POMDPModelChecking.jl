@@ -31,6 +31,8 @@ function POMDPs.solve(solver::ModelCheckingSolver, problem::M) where M<:Union{MD
     return ModelCheckingPolicy(policy, pmdp, get_init_state_number(automata))
 end
 
+# For MDPs 
+
 function POMDPs.action(policy::ModelCheckingPolicy{P, M}, s) where {P <: Policy, M <: ProductMDP}
     a = action(policy.policy, ProductState(s, policy.memory))
     update_memory!(policy, s, a)
@@ -78,3 +80,8 @@ function update_memory!(policy::ModelCheckingPolicy, s, a)
     end
 end
 
+# For POMDPs
+
+POMDPs.action(policy::ModelCheckingPolicy{P, M}, b) where {P <: Policy, M <: ProductPOMDP} = action(policy.policy, b)
+POMDPs.value(policy::ModelCheckingPolicy{P, M}, b) where {P <: Policy, M <: ProductPOMDP} = value(policy.policy, b)
+POMDPPolicies.actionvalues(policy::ModelCheckingPolicy{P, M}, b) where {P <: Policy, M <: ProductPOMDP} = actionvalues(policy.policy, b)

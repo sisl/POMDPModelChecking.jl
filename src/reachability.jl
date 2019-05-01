@@ -1,7 +1,7 @@
 @with_kw struct ReachabilitySolver{S} <: Solver
     reach::Set{S} = Set{S}()
     avoid::Set{S} = Set{S}()
-    solver::Solver = ValueIteration()# can use any solver that returns a value function :o
+    solver::Solver = ValueIterationSolver()# can use any solver that returns a value function :o
 end
 
 function POMDPs.solve(solver::ReachabilitySolver, mdp::MDP)

@@ -11,6 +11,7 @@ using Parameters
 using Random
 using DiscreteValueIteration
 using LinearAlgebra
+using Distributions
 using Spot
 
 export
