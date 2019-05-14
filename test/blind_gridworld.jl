@@ -126,6 +126,10 @@ end
 
 ## Rendering 
 
+function POMDPModelTools.render(pomdp::BlindGridWorld, step::Union{NamedTuple, Dict})
+    return POMDPModelTools.render(pomdp.simple_gw, step)
+end
+
 function POMDPModels.tocolor(r::Float64, minr=0., maxr=1.0)
     frac = (r-minr)/(maxr-minr)
     return get(ColorSchemes.redgreensplit, frac)
