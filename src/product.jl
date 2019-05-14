@@ -18,6 +18,8 @@ mutable struct ProductMDP{S, A, Q <: Int, R <: AbstractAutomata} <: MDP{ProductS
     automata::R
     accepting_states::Set{ProductState{S, Q}} 
     sink_state::ProductState{S, Q}
+    # fin_r::Float64
+    # inf_r::Float64
 end
 
 function ProductMDP(mdp::MDP{S}, automata::AbstractAutomata, sink_state::ProductState{S,Q}) where {S,Q}
@@ -29,6 +31,8 @@ mutable struct ProductPOMDP{S, A, O, Q <: Int, R <: AbstractAutomata} <: POMDP{P
     automata::R
     accepting_states::Set{ProductState{S, Q}} 
     sink_state::ProductState{S, Q}
+    # fin_r::Float64
+    # inf_r::Float64
 end
 
 function ProductPOMDP(pomdp::POMDP{S}, automata::AbstractAutomata, sink_state::ProductState{S,Q}) where {S,Q}
@@ -83,7 +87,7 @@ function POMDPs.isterminal(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState
     return false
 end
 
-POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 0.9
+POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 0.999
 
 # in the product MDP, some transitions are "undefined" because the automata does not allow them.
 # the transitions does not necessarily sums up to one!
