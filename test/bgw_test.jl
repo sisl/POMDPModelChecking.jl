@@ -52,15 +52,14 @@ LBOUND = 0.900412
 successes, mu, sig = many_sims(policy.problem, policy, 100);
 
 
-using Plots
-pgfplots()
+using PGFPlots
 
-p = plot(mu, label="MC estimate", linewidth=3, legend=:bottom);
-plot!(1:length(mu), LBOUND*ones(length(mu)), c="black", linestyle=:dot, label="SARSOP lower bound", legend=:bottom);
-plot!(1:length(mu), UBOUND*ones(length(mu)), c="black", linestyle=:dash, label="SARSOP upper bound", legend=:bottom);
-plot!(label=nothing);
+p = Plots.Linear(1:length(mu), mu, legendentry="MC estimate", style="blue, thick", mark="none");
+p2 = Plots.Linear(1:length(mu), LBOUND*ones(length(mu)), style="ultra thick, black, dotted", mark="none", legendentry="SARSOP lower bound");
+p3 = Plots.Linear(1:length(mu), UBOUND*ones(length(mu)), style="ultra thick, black, dashed", mark="none", legendentry="SARSOP upper bound");
+ax = Axis([p, p2, p3], ylabel="Probability of success", xlabel="Number of simulations", legendPos="south east", style="grid=both")
 
-savefig(p, "succ.png")
+PGFPlots.save("succ.pdf", ax)
 
 #=
 
