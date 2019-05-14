@@ -26,6 +26,9 @@ To install `spot` see https://github.com/sisl/Spot.jl and https://spot.lrde.epit
 
 ## Documentation 
 
+**Notes**:
+Be sure to make the terminal state absorbing.
+
 ### Reachability Solver 
 
 
