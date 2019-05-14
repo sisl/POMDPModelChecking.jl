@@ -1,9 +1,9 @@
 using Statistics
 
-function sim(pomdp::POMDP, policy::ModelCheckingPolicy)
+function sim(pomdp::POMDP, policy::ModelCheckingPolicy, i::Int64)
     up = DiscreteUpdater(pomdp)
     b0 = initialize_belief(up, initialstate_distribution(pomdp))
-    hr = HistoryRecorder(max_steps=50)
+    hr = HistoryRecorder(max_steps=50, rng=MersenneTwister(i))
     hist = simulate(hr, pomdp, policy, up, b0)
     return hist
 end
@@ -13,7 +13,7 @@ function many_sims(pomdp::POMDP, policy::ModelCheckingPolicy, n_sims::Int64 = 10
     mu = zeros(n_sims - 1)
     sig = zeros(n_sims - 1)
     successes = @showprogress pmap(1:n_sims) do x 
-                            hist = sim(pomdp, policy)
+                            hist = sim(pomdp, policy, x)
                             return undiscounted_reward(hist) > 0.
                 end
                         

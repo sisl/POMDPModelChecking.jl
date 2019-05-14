@@ -38,7 +38,7 @@ prop = ltl"!crash U a & !crash U b"
 
 mdp = SimpleGridWorld(rewards=Dict(GWPos(9,3)=>10.0), terminate_from=Set([]))
 
-POMDPModelChecking.labels(pomdp::BlindGridWorld, s, a) = labels(pomdp.simple_gw, s, a)
+@everywhere POMDPModelChecking.labels(pomdp::BlindGridWorld, s, a) = labels(pomdp.simple_gw, s, a)
 pomdp = BlindGridWorld(exit=GWPos(4,3), simple_gw = mdp)
 
 sarsop = SARSOPSolver(precision=1e-2, timeout=10.0)
@@ -49,14 +49,14 @@ policy = solve(solver, pomdp)
 UBOUND = 0.914258
 LBOUND = 0.900412
 
-successes, mu, sig = many_sims(policy.problem, policy, 500);
+successes, mu, sig = many_sims(policy.problem, policy, 100);
 
 
 using Plots
 pgfplots()
 
-p = plot(mu, label="MC estimate", linewidth=3);
-plot!(1:length(mu), LBOUND*ones(length(mu)), c="black", linestyle=:dot, label="SARSOP lower bound");
+p = plot(mu, label="MC estimate", linewidth=3, legend=:bottom);
+plot!(1:length(mu), LBOUND*ones(length(mu)), c="black", linestyle=:dot, label="SARSOP lower bound", legend=:bottom);
 plot!(1:length(mu), UBOUND*ones(length(mu)), c="black", linestyle=:dash, label="SARSOP upper bound", legend=:bottom);
 plot!(label=nothing);
 
