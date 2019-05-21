@@ -24,9 +24,12 @@ function POMDPs.solve(solver::ModelCheckingSolver, problem::M) where M<:Union{MD
         pmdp = ProductMDP(problem, automata, sink_state) # build product mdp x automata
     end
     if isempty(pmdp.accepting_states)
-        accepting_states!(pmdp, verbose=verbose) # compute the maximal end components via a graph analysis
-        verbose ? println("Found ", length(pmdp.accepting_states), " accepting states") : nothing
+        mec_time = @elapsed begin
+            accepting_states!(pmdp, verbose=verbose) # compute the maximal end components via a graph analysis
+            verbose ? println("Found ", length(pmdp.accepting_states), " accepting states") : nothing
+        end
     end
+    println("MEC comp time: ", mec_time)
     policy = solve(solver.solver, pmdp) # solve using your favorite method
     return ModelCheckingPolicy(policy, pmdp, get_init_state_number(automata))
 end
