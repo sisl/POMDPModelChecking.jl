@@ -87,7 +87,7 @@ function POMDPs.isterminal(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState
     return false
 end
 
-POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 0.999
+POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 1.0 # XXX for SARSOP use 1-eps()
 
 # in the product MDP, some transitions are "undefined" because the automata does not allow them.
 # the transitions does not necessarily sums up to one!
@@ -106,22 +106,9 @@ function POMDPs.transition(problem::Union{ProductMDP, ProductPOMDP}, state::Prod
             new_probs[i] = pdf(d, sp)
         end
         return SparseCat{Vector{ProductState{S,Q}}, Vector{Float64}}(new_vals, new_probs)
-    # for (sp, p) in weighted_iterator(d)
-    #     if p == 0.
-    #         continue
-    #     end
-    #     # l = labels(problem.problem, sp, action)
-        
-    #     if qp != nothing
-    #         push!(new_probs, p)
-    #         push!(new_vals, ProductState(sp, qp))
-    #     end
-    # end
     else
         return SparseCat{Vector{statetype(problem)}, Vector{Float64}}([problem.sink_state], [1.0])
     end
-    # normalize!(new_probs, 1)
-    # return SparseCat{Vector{statetype(problem)}, Vector{Float64}}(new_vals, new_probs)
 end
 
 
@@ -131,6 +118,9 @@ function POMDPs.initialstate_distribution(problem::Union{ProductMDP, ProductPOMD
     new_vals = Vector{statetype(problem)}()
     q0 = get_init_state_number(problem.automata)
     for (s0, p) in weighted_iterator(b0)
+        # labs = labels(problem.problem, s0)
+        # q = nextstate(problem.automata, q0, labs)
+        # push!(new_vals, ProductState(s0, q))
         push!(new_vals, ProductState(s0, q0))
         push!(new_probs, p)
     end
