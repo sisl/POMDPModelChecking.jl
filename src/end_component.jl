@@ -34,6 +34,7 @@ function maximal_end_components(mdp::M; verbose=false) where {M <: Union{MDP, PO
         verbose ? println("finished $DEBUG_STEP step, old MEC $(length(MEC)) -> new MEC $(length(MECnew))") : nothing
         DEBUG_STEP += 1
     end
+    verbose ? println("MECs length: ", length.(MEC)) : nothing
     verbose ? println("MECs computed. \n") : nothing
     return MEC
 end
