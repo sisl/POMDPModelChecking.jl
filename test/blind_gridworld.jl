@@ -165,7 +165,9 @@ function POMDPModels.render(mdp::SimpleGridWorld, step::Union{NamedTuple,Dict};
 
         if landmark != nothing 
             if landmark(GWPos(x,y))#haskey(landmark, GWPos(x,y))
-                push!(landmarks, compose(ctx, circle(0.5, 0.5, 0.3), fill("purple")))
+                txt = string(LABELLED_STATES[GWPos(x,y)])
+                # push!(landmarks, compose(ctx, text(0.5, 0.5, txt, hcenter, vcenter), circle(0.5, 0.5, 0.3), fill("purple")))
+                push!(landmarks, compose(ctx, text(0.5, 0.5, txt, hcenter, vcenter)))
                 # push!(landmarks, compose(ctx, text(0.5,0.5, landmark[GWPos(x,y)], hcenter, vcenter)))
             end
         end
