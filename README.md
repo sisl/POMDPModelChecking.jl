@@ -19,17 +19,94 @@ Pkg.add(PackageSpec(url="https://github.com/sisl/POMDPModelChecking.jl"))
 
 To install `spot` see https://github.com/sisl/Spot.jl and https://spot.lrde.epita.fr/install.html.
 
-## TODOs
-
-- [ ] Interface with [Storm](http://www.stormchecker.org/) : A writer is already written to convert MDP to the good format, a solver interface has been prototyped, relying on the python library  [stormpy](https://moves-rwth.github.io/stormpy/)
-- [ ] Fix terminal state issues: some POMDP solver will set the value at the terminal state to 0 by default, this is not suitable for reachability analysis. This could be handled by adding a sink state.
 
 ## Documentation 
 
-**Notes**:
-Be sure to make the terminal state absorbing.
+This package exports two solvers: `ReachabilitySolver` and `ModelCheckingSolver`. Those solvers are intended to be used on models implemented with `POMDPs.jl`, please refer to the `POMDPs.jl` documentation to learn how to implement a POMDP or MDP model using the correct interface.
 
 ### Reachability Solver 
 
+The `ReachabilitySolver`  solves reachability and constrained reachability problems in MDPs and POMDPs. It returns the policy that maximizes the probability of reaching a given set of states. It takes as input the set of states to reach and the set of states to avoid, as well as the underlying solver. Any solver from POMDPs.jl are supported.
+
+**Options of the Reachability solver**
+
+- `reach::Set{S}` the set of states to reach, `S` is the state type of your problem.
+- `avoid::Set{S}` a set of states to avoid.
+- `solver::Solver` the underlying planning algorithm used by the reachability solver. It defaults to `ValueIterationSolver`, you can choose any solver from POMDPs.jl
+
+**Example**
+
+```julia
+using POMDPs
+using POMDPModelChecking
+using POMDPModels
+using DiscreteValueIteration
+
+mdp = SimpleGridWorld(size=(10,10), terminate_from=Set([GWPos(9,3)]), tprob=0.7)
+
+solver = ReachabilitySolver(reach=Set([GWPos(10,1)]),
+                            avoid = Set([GWPos(9, 3)]), 
+                            solver = ValueIterationSolver())
+
+policy = solve(solver, mdp)
+```
 
 ### Model Checker
+
+The `ModelCheckingSolver` provides a probabilistic model checker for MDPs and POMDPs with LTL specification. The solver takes as input an LTL formula and the underlying MDP/POMDP planning algorithm used to perform the model checking. It supports any solver from `POMDPs.jl`. Internally, this solver requires a discrete state and discrete actions model.
+
+**Labeling function:** A problem dependent labeling function must be implemented by the problem writer. This labelling functions maps states of the MDPs/POMDPs to atomic propositions of the LTL formula that you want to verify. One must implement the function `POMDPModelChecking.labels(problem::M, s::S, a::A)` where `M` is the problem type, `S` the state type of the problem, and `A` the action type. This function must return a tuple of symbols. Each symbol corresponds to the atomic propositions that hold true in this state.
+
+**Example**
+
+```julia
+using POMDPs
+using Spot # for easy LTL manipulation
+using POMDPModelChecking
+using SARSOP # a POMDP solver from POMDPs.jl
+using RockSample # pomdp model from https://github.com/JuliaPOMDP/RockSample.jl
+
+# Init problem
+pomdp = RockSamplePOMDP{3}(map_size=(5,5),
+                            rocks_positions=[(2,3), (4,4), (4,2)])
+
+
+## Probability of getting at least one good rock 
+
+# Implement the labeling function for your problem
+# For the rock sample problem, good_rock holds true if the robot is on a good rock location 
+# and take the action `sample` (a=5)
+# similarly, bad_rock holds true if the robot samples a bad rock
+# The exit proposition is true if the robot reached a terminal state
+function POMDPModelChecking.labels(pomdp::RockSamplePOMDP, s::RSState, a::Int64)
+    if a == 5 && in(s.pos, pomdp.rocks_positions) # sample rock
+        rock_ind = findfirst(isequal(s.pos), pomdp.rocks_positions)
+        if s.rocks[rock_ind]
+            return (:good_rock,)
+        else 
+            return (:bad_rock,)
+        end
+    end
+
+    if isterminal(pomdp, s)
+        return (:exit,)
+    end
+    return ()
+end
+
+# the property to statisfy, the robot must pick up a good rock, never pick up a bad rock, 
+# and leave the environment
+prop = ltl"F good_rock & F exit & G !bad_rock"
+
+solver = ModelCheckingSolver(property = prop, 
+                      solver=SARSOPSolver(precision=1e-3), verbose=true)
+
+policy = solve(solver, pomdp)
+```
+
+
+Interface with [Storm](http://www.stormchecker.org/) : A writer is already written to convert MDP to the good format, a solver interface has been prototyped, relying on the python library  [stormpy](https://moves-rwth.github.io/stormpy/). The files are in the `legacy/` folder but are only experimental for now.
+
+## Disclaimer
+
+This is still work in progress and could be improved a lot, please submit issues if you encounter. Contributions and PR welcome!
