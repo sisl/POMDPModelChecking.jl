@@ -45,16 +45,18 @@ export
 
 include("model_checking_solver.jl")
 
-export
-    # safety mask 
-    SafetyMask,
-    safe_actions,
-    MaskedEpsGreedyPolicy,
-    MaskedValuePolicy
+
+# moved to legacy, needs to be restored at some point
+# export
+#     # safety mask 
+#     SafetyMask,
+#     safe_actions,
+#     MaskedEpsGreedyPolicy,
+#     MaskedValuePolicy
 
 
-include("safety_mask.jl")
-include("masked_policies.jl")
+# include("safety_mask.jl")
+# include("masked_policies.jl")
 
 # broken for now
 # export     write_mdp_transition,
