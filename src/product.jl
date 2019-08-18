@@ -87,7 +87,7 @@ function POMDPs.isterminal(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState
     return false
 end
 
-POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 1.0 # XXX for SARSOP use 1-eps()
+POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 1 - eps() # XXX needed for SARSOP 
 
 # in the product MDP, some transitions are "undefined" because the automata does not allow them.
 # the transitions does not necessarily sums up to one!
@@ -194,7 +194,5 @@ POMDPs.observation(p::ProductPOMDP, s::ProductState{S, Q}, a::A, sp::ProductStat
 POMDPs.observations(p::ProductPOMDP) = observations(p.problem)
 POMDPs.n_observations(p::ProductPOMDP) = n_observations(p.problem)
 POMDPs.obsindex(p::ProductPOMDP, o::O) where O = obsindex(p.problem, o)
-# POMDPs.obsindex(p::ProductPOMDP, o::Bool) = obsindex(p.problem, o) # to avoid clash with POMDPModelTools
-
 POMDPs.convert_o(T::Type{V}, o, p::ProductPOMDP) where V<:AbstractArray = convert_o(T, o, p.problem)
 POMDPs.convert_o(T::Type{O}, vec::V, p::ProductPOMDP) where {O,V<:AbstractArray} = convert_o(T, vec, p.problem)

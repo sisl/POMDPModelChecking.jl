@@ -62,7 +62,7 @@ end
     pmdp = ProductMDP(mdp, dra, Set{ProductState{GWPos, Int64}}(), ProductState(GWPos(1,1), -1))
     state_space = states(pmdp)
     action_space = actions(pmdp)
-    @test discount(pmdp) == 1.0
+    @test isapprox(discount(pmdp), 1.0)
     @test n_states(pmdp) == n_states(mdp)*num_states(dra) + 1
     @test n_states(pmdp) == length(state_space)
     @test n_actions(pmdp) == length(action_space)
@@ -80,7 +80,7 @@ end
     state_space = states(ppomdp)
     action_space = actions(ppomdp)
     observation_space = observations(ppomdp)
-    @test discount(ppomdp) == 1.0
+    @test isapprox(discount(pomdp), 1.0)
     @test n_states(ppomdp) == n_states(pomdp)*num_states(dra) + 1
     @test n_states(ppomdp) == length(state_space)
     @test n_actions(ppomdp) == length(action_space)
