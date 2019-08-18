@@ -1,7 +1,6 @@
 # POMDPModelChecking.jl
 
-[![Build Status](https://travis-ci.org/sisl/POMDPModelChecking.jl.svg?branch=master)](https://travis-ci.org/sisl/POMDPModelChecking.jl)
-[![Coverage Status](https://coveralls.io/repos/sisl/POMDPModelChecking.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/sisl/POMDPModelChecking.jl?branch=master)
+[![Build Status](https://travis-ci.org/sisl/POMDPModelChecking.jl.svg?branch=master)](https://travis-ci.org/sisl/POMDPModelChecking.jl) [![Coverage Status](https://coveralls.io/repos/sisl/POMDPModelChecking.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/sisl/POMDPModelChecking.jl?branch=master)
 
 This package provides support for performing verification and policy synthesis in POMDP from LTL formulas. It relies on [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl) for expressing the model and [Spot.jl](https://github.com/sisl/Spot.jl) for manipulating LTL formulas. 
 
