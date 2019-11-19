@@ -2,19 +2,15 @@
 
 [![Build Status](https://travis-ci.org/sisl/POMDPModelChecking.jl.svg?branch=master)](https://travis-ci.org/sisl/POMDPModelChecking.jl) [![Coverage Status](https://coveralls.io/repos/sisl/POMDPModelChecking.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/sisl/POMDPModelChecking.jl?branch=master)
 
-This package provides support for performing verification and policy synthesis in POMDP from LTL formulas. It relies on [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl) for expressing the model and [Spot.jl](https://github.com/sisl/Spot.jl) for manipulating LTL formulas. 
+This package provides support for performing verification and policy synthesis in POMDPs from LTL formulas. It relies on [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl) for expressing the model and [Spot.jl](https://github.com/sisl/Spot.jl) for manipulating LTL formulas. 
 
 
 ## Installation 
 
 ```julia
 using Pkg
-Pkg.add(PackageSpec(url="https://github.com/sisl/Spot.jl"))
 Pkg.add(PackageSpec(url="https://github.com/sisl/POMDPModelChecking.jl"))
 ```
-
-To install `spot` see https://github.com/sisl/Spot.jl and https://spot.lrde.epita.fr/install.html.
-
 
 ## Documentation 
 
@@ -101,7 +97,9 @@ policy = solve(solver, pomdp)
 ```
 
 
-Interface with [Storm](http://www.stormchecker.org/) : A writer is already written to convert MDP to the good format, a solver interface has been prototyped, relying on the python library  [stormpy](https://moves-rwth.github.io/stormpy/). The files are in the `legacy/` folder but are only experimental for now.
+**Interface with [Storm](http://www.stormchecker.org/) :**
+
+A writer is already written to convert MDP to the good format, a solver interface has been prototyped, relying on the python library  [stormpy](https://moves-rwth.github.io/stormpy/). The files are in the `legacy/` folder but are only experimental for now.
 
 ## Disclaimer
 
