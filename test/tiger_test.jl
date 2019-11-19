@@ -152,7 +152,6 @@ simulate(hr, pomdp, policy, filter, b0)
 
 
 
-n_states(pmdp)
 state_space = states(pmdp)
 transition(pmdp, state_space[4], 2)
 

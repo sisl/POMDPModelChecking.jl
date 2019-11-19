@@ -10,7 +10,7 @@ function maximal_end_components(mdp::M; verbose=false) where {M <: Union{MDP, PO
     state_space = states(mdp)
     MEC = Vector{Vector{Int64}}(undef, 0) 
     MECnew = Vector{Vector{Int64}}(undef, 0)
-    push!(MECnew, 1:n_states(mdp))# initialize
+    push!(MECnew, 1:length(state_space))# initialize
     DEBUG_STEP = 1 #XXX
     DEBUG_MAX_STEPS = 100 # XXX
     verbose ? println("Computing Maximal End Components ... \n") : nothing
@@ -41,7 +41,7 @@ end
 
 # convert MDP to graph 
 function mdp_to_graph(mdp::M) where {M <: Union{MDP, POMDP}}
-    g = DiGraph(n_states(mdp))
+    g = DiGraph(length(states(mdp)))
     for (i, s) in enumerate(ordered_states(mdp))
         si = stateindex(mdp, s)
         if isterminal(mdp, s)

@@ -63,9 +63,7 @@ end
     state_space = states(pmdp)
     action_space = actions(pmdp)
     @test isapprox(discount(pmdp), 1.0)
-    @test n_states(pmdp) == n_states(mdp)*num_states(dra) + 1
-    @test n_states(pmdp) == length(state_space)
-    @test n_actions(pmdp) == length(action_space)
+    @test length(state_space) == length(states(mdp))*num_states(dra) + 1
     @test statetype(pmdp) == ProductState{GWPos, Int64}
     @test actiontype(pmdp) == Symbol
     @test test_stateindexing(pmdp)
@@ -81,13 +79,10 @@ end
     action_space = actions(ppomdp)
     observation_space = observations(ppomdp)
     @test isapprox(discount(pomdp), 1.0)
-    @test n_states(ppomdp) == n_states(pomdp)*num_states(dra) + 1
-    @test n_states(ppomdp) == length(state_space)
-    @test n_actions(ppomdp) == length(action_space)
+    @test length(state_space) == length(states(pomdp))*num_states(dra) + 1
     @test statetype(ppomdp) == ProductState{GWPos, Int64}
     @test actiontype(ppomdp) == Symbol
-    @test n_observations(ppomdp) == length(observation_space)
-    @test n_observations(ppomdp) == n_observations(pomdp)
+    @test length(observations(pomdp)) == length(observation_space)
     @test obstype(ppomdp) == obstype(pomdp)
     @test test_stateindexing(ppomdp)
     trans_prob_consistency_check(ppomdp) 

@@ -50,7 +50,7 @@ function POMDPs.value(policy::ReachabilityPolicy, s)
 end
 function POMDPPolicies.actionvalues(policy::ReachabilityPolicy, s)
     if s ∈ policy.reach 
-        return ones(n_actions(policy.problem))
+        return ones(length(actions(policy.problem)))
     else
         return actionvalues(policy.policy, s)
     end

@@ -77,7 +77,7 @@ end
 
 function POMDPPolicies.actionvalues(policy::ModelCheckingPolicy{P, M}, s::ProductState{S, Q}) where {P <: Policy, M <: ProductMDP, S, Q}
     if s ∈ policy.problem.accepting_states
-        return ones(n_actions(policy.problem))
+        return ones(length(actions(policy.problem)))
     else
         return actionvalues(policy.policy, s)
     end

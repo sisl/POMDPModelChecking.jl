@@ -45,9 +45,9 @@ mdp = SimpleGridWorld(rewards=Dict(GWPos(9,3)=>10.0), terminate_from=Set([]))
 @everywhere POMDPModelChecking.labels(pomdp::BlindGridWorld, s, a) = labels(pomdp.simple_gw, s, a)
 pomdp = BlindGridWorld(exit=GWPos(-1,-1), simple_gw = mdp)
 
-@show n_states(pomdp)
-@show n_actions(pomdp)
-@show n_observations(pomdp)
+@show length(states(pomdp))
+@show length(actions(pomdp))
+@show length(observations(pomdp))
 
 
 sarsop = SARSOPSolver(precision=1e-2)

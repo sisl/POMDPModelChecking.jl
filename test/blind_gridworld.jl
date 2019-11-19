@@ -28,7 +28,6 @@ end
 ## States 
 
 POMDPs.states(pomdp::BlindGridWorld) = states(pomdp.simple_gw)
-POMDPs.n_states(pomdp::BlindGridWorld) = n_states(pomdp.simple_gw)
 POMDPs.stateindex(pomdp::BlindGridWorld, s::AbstractVector{Int}) = stateindex(pomdp.simple_gw, s)
 POMDPs.initialstate(pomdp::BlindGridWorld, rng::AbstractRNG) = initialstate(pomdp.simple_gw, rng::AbstractRNG)
 POMDPs.initialstate_distribution(pomdp::BlindGridWorld) = uniform_belief(pomdp)
@@ -36,7 +35,6 @@ POMDPs.initialstate_distribution(pomdp::BlindGridWorld) = uniform_belief(pomdp)
 ## Actions 
 
 POMDPs.actions(pomdp::BlindGridWorld) = actions(pomdp.simple_gw)
-POMDPs.n_actions(pomdp::BlindGridWorld) = n_actions(pomdp.simple_gw)
 POMDPs.actionindex(pomdp::BlindGridWorld, a::Symbol) = actionindex(pomdp.simple_gw, a)
 
 ## Transition
@@ -65,7 +63,6 @@ POMDPs.transition(pomdp::BlindGridWorld, s::AbstractVector{Int}, a::Symbol) = tr
 
 POMDPs.observations(pomdp::BlindGridWorld) = states(pomdp)
 POMDPs.obsindex(pomdp::BlindGridWorld, o) = stateindex(pomdp, o)
-POMDPs.n_observations(pomdp::BlindGridWorld) = n_states(pomdp)
 POMDPs.generate_o(pomdp::BlindGridWorld, s, rng) = rand(rng, observation(pomdp, first(actions(pomdp)), s))
 
 const NEIGHBORS_DIRECTIONS = Set([GWPos(0,1), GWPos(0,-1), GWPos(-1,0), GWPos(1,0), 
@@ -73,7 +70,7 @@ const NEIGHBORS_DIRECTIONS = Set([GWPos(0,1), GWPos(0,-1), GWPos(-1,0), GWPos(1,
 
 function POMDPs.observation(pomdp::BlindGridWorld, a::Symbol, sp::AbstractVector{Int})
     if sp == GWPos(-1,-1)
-        return SparseCat(states(pomdp), normalize!(ones(n_states(pomdp)), 1))
+        return SparseCat(states(pomdp), normalize!(ones(length(states(pomdp))), 1))
     end
 
     neighbors = MVector{length(NEIGHBORS_DIRECTIONS) + 1, GWPos}(undef)
@@ -105,7 +102,7 @@ POMDPs.initialstate_distribution(pomdp::BlindGridWorld) = uniform_belief(pomdp)
 ## helpers
 
 function deterministic_belief(pomdp, s)
-    b = zeros(n_states(pomdp))
+    b = zeros(length(states(pomdp)))
     si = stateindex(pomdp, s)
     b[si] = 1.0
     return DiscreteBelief(pomdp, b)

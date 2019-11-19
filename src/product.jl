@@ -18,8 +18,6 @@ mutable struct ProductMDP{S, A, Q <: Int, R <: AbstractAutomata} <: MDP{ProductS
     automata::R
     accepting_states::Set{ProductState{S, Q}} 
     sink_state::ProductState{S, Q}
-    # fin_r::Float64
-    # inf_r::Float64
 end
 
 function ProductMDP(mdp::MDP{S}, automata::AbstractAutomata, sink_state::ProductState{S,Q}) where {S,Q}
@@ -31,8 +29,6 @@ mutable struct ProductPOMDP{S, A, O, Q <: Int, R <: AbstractAutomata} <: POMDP{P
     automata::R
     accepting_states::Set{ProductState{S, Q}} 
     sink_state::ProductState{S, Q}
-    # fin_r::Float64
-    # inf_r::Float64
 end
 
 function ProductPOMDP(pomdp::POMDP{S}, automata::AbstractAutomata, sink_state::ProductState{S,Q}) where {S,Q}
@@ -111,16 +107,12 @@ function POMDPs.transition(problem::Union{ProductMDP, ProductPOMDP}, state::Prod
     end
 end
 
-
 function POMDPs.initialstate_distribution(problem::Union{ProductMDP, ProductPOMDP})
     b0 = initialstate_distribution(problem.problem)
     new_probs = Float64[]
     new_vals = Vector{statetype(problem)}()
     q0 = get_init_state_number(problem.automata)
     for (s0, p) in weighted_iterator(b0)
-        # labs = labels(problem.problem, s0)
-        # q = nextstate(problem.automata, q0, labs)
-        # push!(new_vals, ProductState(s0, q))
         push!(new_vals, ProductState(s0, q0))
         push!(new_probs, p)
     end
@@ -148,17 +140,13 @@ end
 
 POMDPs.actions(problem::Union{ProductMDP, ProductPOMDP}) = actions(problem.problem)
 
-POMDPs.n_states(problem::Union{ProductMDP, ProductPOMDP}) = n_states(problem.problem)*num_states(problem.automata) + 1
-
-POMDPs.n_actions(problem::Union{ProductMDP, ProductPOMDP}) = n_actions(problem.problem)
-
 function POMDPs.stateindex(problem::Union{ProductMDP, ProductPOMDP}, s::ProductState{S,Q}) where {S,Q} 
     if s == problem.sink_state 
-        return n_states(problem)
+        return length(states(problem))
     end
     si = stateindex(problem.problem, s.s)
     qi = s.q
-    return LinearIndices((num_states(problem.automata), n_states(problem.problem)))[qi, si]
+    return LinearIndices((num_states(problem.automata), length(states(problem.problem))))[qi, si]
 end
 
 POMDPs.statetype(p::Union{ProductMDP, ProductPOMDP}) = ProductState{statetype(p.problem), typeof(p.sink_state.q)}
@@ -166,7 +154,6 @@ POMDPs.statetype(p::Union{ProductMDP, ProductPOMDP}) = ProductState{statetype(p.
 POMDPs.actiontype(p::Union{ProductMDP, ProductPOMDP}) = actiontype(p.problem)
 
 POMDPs.actionindex(p::Union{ProductMDP, ProductPOMDP}, a) = actionindex(p.problem, a) 
-# POMDPs.actionindex(p::Union{ProductMDP, ProductPOMDP}, a::Int64) = actionindex(p.problem, a) # to avoid clashes with POMDPModelTools
 
 POMDPs.convert_a(T::Type{V}, a, p::Union{ProductMDP, ProductPOMDP}) where V<:AbstractArray = convert_a(T, a, p.problem)
 POMDPs.convert_a(T::Type{A}, vec::V, p::Union{ProductMDP, ProductPOMDP}) where {A,V<:AbstractArray} = convert_a(T, vec, p.problem)
@@ -192,7 +179,6 @@ POMDPs.observation(p::ProductPOMDP, s::ProductState{S, Q}) where {S,Q} = observa
 POMDPs.observation(p::ProductPOMDP, a::A, s::ProductState{S, Q}) where {S,Q,A} = observation(p.problem, a, s.s)
 POMDPs.observation(p::ProductPOMDP, s::ProductState{S, Q}, a::A, sp::ProductState{S, Q}) where {S,Q,A}= observation(p.problem, s.s, a, sp.s)
 POMDPs.observations(p::ProductPOMDP) = observations(p.problem)
-POMDPs.n_observations(p::ProductPOMDP) = n_observations(p.problem)
 POMDPs.obsindex(p::ProductPOMDP, o::O) where O = obsindex(p.problem, o)
 POMDPs.convert_o(T::Type{V}, o, p::ProductPOMDP) where V<:AbstractArray = convert_o(T, o, p.problem)
 POMDPs.convert_o(T::Type{O}, vec::V, p::ProductPOMDP) where {O,V<:AbstractArray} = convert_o(T, vec, p.problem)

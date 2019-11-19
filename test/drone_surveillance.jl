@@ -132,7 +132,7 @@ makegif(pomdp, hist, filename="test.gif", spec="(s,a)")
 
 
 function deterministic_belief(pomdp, s)
-    b = zeros(n_states(pomdp))
+    b = zeros(length(states(pomdp)))
     si = stateindex(pomdp, s)
     b[si] = 1.0
     return DiscreteBelief(pomdp, b)
