@@ -70,16 +70,13 @@ end
 
 POMDPs.states(r::Union{ReachabilityMDP, ReachabilityPOMDP}) = states(r.problem) 
 POMDPs.stateindex(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s) = stateindex(r.problem, s)
-POMDPs.n_states(r::Union{ReachabilityMDP, ReachabilityPOMDP}) = n_states(r.problem)
 POMDPs.statetype(r::Union{ReachabilityMDP, ReachabilityPOMDP}) = statetype(r.problem)
 POMDPs.actions(r::Union{ReachabilityMDP, ReachabilityPOMDP}) = actions(r.problem)
 POMDPs.actionindex(r::Union{ReachabilityMDP, ReachabilityPOMDP}, a) = actionindex(r.problem, a)
 POMDPs.actiontype(r::Union{ReachabilityMDP, ReachabilityPOMDP}) = actiontype(r.problem)
-POMDPs.n_actions(r::Union{ReachabilityMDP, ReachabilityPOMDP}) = n_actions(r.problem)
 POMDPs.observation(r::ReachabilityPOMDP, s, a) = observation(r.problem, s, a)
 POMDPs.observations(r::ReachabilityPOMDP) = observations(r.problem)
 POMDPs.obsindex(r::ReachabilityPOMDP, o) = obsindex(r.problem, o)
-POMDPs.n_observations(r::ReachabilityPOMDP) = n_observations(r.problem)
 POMDPs.obstype(r::ReachabilityPOMDP) = obstype(r.problem)
 
 POMDPs.transition(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s, a) = transition(r.problem, s, a)
