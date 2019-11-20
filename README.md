@@ -13,6 +13,14 @@ using Pkg
 Pkg.add(PackageSpec(url="https://github.com/sisl/POMDPModelChecking.jl"))
 ```
 
+This package is supported by JuliaPOMDP, it is recommended that you install the JuliaPOMDP registry first and then add the package as follows:
+```julia
+using POMDPs
+POMDPs.add_registry()
+using Pkg
+Pkg.add("POMDPModelChecking")
+```
+
 ## Documentation 
 
 This package exports two solvers: `ReachabilitySolver` and `ModelCheckingSolver`. Those solvers are intended to be used on models implemented with `POMDPs.jl`, please refer to the `POMDPs.jl` documentation to learn how to implement a POMDP or MDP model using the correct interface.
