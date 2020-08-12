@@ -29,8 +29,7 @@ end
 
 POMDPs.states(pomdp::BlindGridWorld) = states(pomdp.simple_gw)
 POMDPs.stateindex(pomdp::BlindGridWorld, s::AbstractVector{Int}) = stateindex(pomdp.simple_gw, s)
-POMDPs.initialstate(pomdp::BlindGridWorld, rng::AbstractRNG) = initialstate(pomdp.simple_gw, rng::AbstractRNG)
-POMDPs.initialstate_distribution(pomdp::BlindGridWorld) = uniform_belief(pomdp)
+POMDPs.initialstate(pomdp::BlindGridWorld) = uniform_belief(pomdp)
 
 ## Actions 
 
@@ -63,7 +62,11 @@ POMDPs.transition(pomdp::BlindGridWorld, s::AbstractVector{Int}, a::Symbol) = tr
 
 POMDPs.observations(pomdp::BlindGridWorld) = states(pomdp)
 POMDPs.obsindex(pomdp::BlindGridWorld, o) = stateindex(pomdp, o)
-POMDPs.generate_o(pomdp::BlindGridWorld, s, rng) = rand(rng, observation(pomdp, first(actions(pomdp)), s))
+function POMDPs.initialobs(pomdp::BlindGridWorld, s) 
+    ImplicitDistribution(s) do s, rng 
+        return rand(rng, observation(pomdp, first(actions(pomdp)), s))
+    end
+end
 
 const NEIGHBORS_DIRECTIONS = Set([GWPos(0,1), GWPos(0,-1), GWPos(-1,0), GWPos(1,0), 
                                   GWPos(1,1), GWPos(-1,1), GWPos(1,-1), GWPos(-1,-1)])
@@ -97,7 +100,7 @@ POMDPs.reward(pomdp::BlindGridWorld, s, a) = reward(pomdp.simple_gw, s)
 POMDPs.discount(pomdp::BlindGridWorld) = 1.0
 
 ## distributions 
-POMDPs.initialstate_distribution(pomdp::BlindGridWorld) = uniform_belief(pomdp)
+POMDPs.initialstate(pomdp::BlindGridWorld) = uniform_belief(pomdp)
 
 ## helpers
 

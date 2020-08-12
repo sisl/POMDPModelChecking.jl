@@ -67,7 +67,7 @@ end
     @test statetype(pmdp) == ProductState{GWPos, Int64}
     @test actiontype(pmdp) == Symbol
     @test test_stateindexing(pmdp)
-    trans_prob_consistency_check(pmdp) 
+    @test has_consistent_transition_distributions(pmdp) 
 
     include("blind_gridworld.jl")
     POMDPModelChecking.labels(pomdp::BlindGridWorld, s, a) = labels(pomdp.simple_gw, s, a)
@@ -85,8 +85,8 @@ end
     @test length(observations(pomdp)) == length(observation_space)
     @test obstype(ppomdp) == obstype(pomdp)
     @test test_stateindexing(ppomdp)
-    trans_prob_consistency_check(ppomdp) 
-    obs_prob_consistency_check(ppomdp)
+    @test has_consistent_transition_distributions(ppomdp) 
+    @test has_consistent_observation_distributions(ppomdp)
 end
 
 @testset begin "MDP Model Checking"

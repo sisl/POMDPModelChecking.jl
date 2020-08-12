@@ -11,6 +11,7 @@ import Cairo
 using POMDPGifs
 using ProgressMeter
 using Statistics
+using POMDPModelTools
 
 
 # pomdp = RockSamplePOMDP{2}(map_size=(4,4), 
@@ -24,9 +25,9 @@ pomdp = RockSamplePOMDP{3}(map_size=(5,5),
 #                            rocks_positions=[(1,2), (2,8), (3,1), (3,5), (4,2), (4,5), (6,6), (7,4)])
 
 
-@show n_states(pomdp)
-@show n_actions(pomdp)
-@show n_observations(pomdp)
+@show length(states(pomdp))
+@show length(actions(pomdp))
+@show length(observations(pomdp))
 
 ## Probability of getting at least one good rock 
 
@@ -48,9 +49,12 @@ function POMDPModelChecking.labels(pomdp::RockSamplePOMDP, s::RSState, a::Int64)
 end
 
 # prop = ltl"G !bad_rock"
-prop = ltl"F good_rock & F exit"
-# prop = ltl" F good_rock & G !bad_rock & F exit" 
+# prop = ltl"F good_rock & F exit"
+prop = ltl"F good_rock & G !bad_rock & F exit" 
 # prop = ltl" (!bad_rock U good_rock) && (!bad_rock U exit)" 
+
+# overwriding discount, to trigger SARSOP iterations
+POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 0.999
 
 run(`rm model.pomdpx`)
 solver = ModelCheckingSolver(property = prop, 
@@ -61,14 +65,18 @@ policy = solve(solver, pomdp);
 
 
 ## visualize policy
+
+# first simulate the product pomdp
 rng = MersenneTwister(2)
 up = DiscreteUpdater(policy.problem)
 b0 = initialize_belief(up, initialstate_distribution(policy.problem))
 hr = HistoryRecorder(max_steps=50)
-hist = simulate(hr, policy.problem, policy, up, b0);
-prod_state_hist = hist.state_hist
-state_hist = [s.s for s in hist.state_hist];
-hist = POMDPHistory(state_hist, [getfield(hist, f) for f in fieldnames(POMDPHistory) if f != :state_hist]...);
+product_hist = simulate(hr, policy.problem, policy, up, b0);
+
+# create a new history with the pomdp state and action, to be replayed and visualized
+hist = SimHistory([(s=s.s, a=a) for (s, a) in eachstep(product_hist, "(s,a)")], 
+                  discount(pomdp), nothing, nothing)
+
 makegif(pomdp, hist, filename="test.gif", spec="(s,a)")
 
 #=
