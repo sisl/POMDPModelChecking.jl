@@ -1,4 +1,4 @@
-```
+"""
     ModelCheckingSolver
 
 A probabilistic model checker for MDPs and POMDPs with LTL specification. 
@@ -10,7 +10,7 @@ Internally, this solver requires a discrete state and discrete action model.
 - `property::SpotFormula`
 - `solver::Solver` any MDP/POMDP solver
 - `verbose::Bool = true`
-```
+"""
 @with_kw mutable struct ModelCheckingSolver <: Solver 
     property::SpotFormula = ltl"true" 
     solver::Solver = ValueIterationSolver() # can use any solver that returns a value function :o
