@@ -69,7 +69,7 @@ policy = solve(solver, pomdp);
 # first simulate the product pomdp
 rng = MersenneTwister(2)
 up = DiscreteUpdater(policy.problem)
-b0 = initialize_belief(up, initialstate_distribution(policy.problem))
+b0 = initialize_belief(up, initialstate(policy.problem))
 hr = HistoryRecorder(max_steps=50)
 product_hist = simulate(hr, policy.problem, policy, up, b0);
 
