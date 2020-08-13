@@ -107,8 +107,8 @@ function POMDPs.transition(problem::Union{ProductMDP, ProductPOMDP}, state::Prod
     end
 end
 
-function POMDPs.initialstate_distribution(problem::Union{ProductMDP, ProductPOMDP})
-    b0 = initialstate_distribution(problem.problem)
+function POMDPs.initialstate(problem::Union{ProductMDP, ProductPOMDP})
+    b0 = initialstate(problem.problem)
     new_probs = Float64[]
     new_vals = Vector{statetype(problem)}()
     q0 = get_init_state_number(problem.automata)
@@ -118,11 +118,6 @@ function POMDPs.initialstate_distribution(problem::Union{ProductMDP, ProductPOMD
     end
     normalize!(new_probs, 1)
     return SparseCat{Vector{statetype(problem)}, Vector{Float64}}(new_vals, new_probs)
-end
-
-function POMDPs.initialstate(problem::Union{ProductMDP, ProductPOMDP}, rng::AbstractRNG)
-    q0 = get_init_state_number(problem.automata)
-    return ProductState(initialstate(problem.problem, rng), q0)
 end
 
 function POMDPs.states(problem::Union{ProductMDP, ProductPOMDP}) 
