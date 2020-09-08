@@ -18,6 +18,7 @@ Spot = "f11abc24-ce50-11e8-2475-af6658d13f2b"
 
 [compat]
 julia = "1.1"
+POMDPs = "0.9"
 
 [extras]
 BeliefUpdaters = "8bb6e9a1-7d73-552c-a44a-e5dc5634aac4"
