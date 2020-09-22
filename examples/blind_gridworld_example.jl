@@ -2,7 +2,7 @@ using Revise
 using Distributed
 # addprocs(2)
 
-@everywhere begin 
+# @everywhere begin 
     using Random
     using POMDPs
     using Spot
@@ -34,7 +34,7 @@ using Distributed
 
     include("mc_simulation.jl")
 
-end
+# end
 
 # prop = ltl"!crash U a"
 # prop = ltl"!crash U a & !crash U b"
@@ -53,7 +53,7 @@ pomdp = BlindGridWorld(exit=GWPos(-1,-1), simple_gw = mdp)
 sarsop = SARSOPSolver(precision=1e-2)
 solver = ModelCheckingSolver(solver=sarsop, property=prop, verbose=true)
 
-run(`rm model.pomdpx`)
+# run(`rm model.pomdpx`)
 policy = solve(solver, pomdp);
 
 UBOUND = 0.914258
