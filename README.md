@@ -12,8 +12,7 @@ This package is supported by JuliaPOMDP, it is recommended that you install the 
 ```julia
 using Pkg
 Pkg.add("POMDPs")
-using POMDPs
-POMDPs.add_registry()
+Pkg.pkg"registry add https://github.com/JuliaPOMDP/Registry"
 Pkg.add("POMDPModelChecking")
 ```
 
