@@ -8,13 +8,9 @@ If this package is useful to you, consider citing: M. Bouton, J. Tumova, and M. 
 
 ## Installation 
 
-```julia
-using Pkg
-Pkg.add(PackageSpec(url="https://github.com/sisl/POMDPModelChecking.jl"))
-```
-
 This package is supported by JuliaPOMDP, it is recommended that you install the JuliaPOMDP registry first and then add the package as follows:
 ```julia
+using Pkg; Pkg.add("POMDPs")
 using POMDPs
 POMDPs.add_registry()
 using Pkg
