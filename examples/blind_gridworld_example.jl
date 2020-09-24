@@ -2,7 +2,7 @@ using Revise
 using Distributed
 # addprocs(2)
 
-@everywhere begin 
+# @everywhere begin 
     using Random
     using POMDPs
     using Spot
@@ -20,9 +20,9 @@ using Distributed
 
     include("../test/blind_gridworld.jl")
 
-    # const LABELLED_STATES = Dict(GWPos(4,3) => :crash, GWPos(4,6)=>:crash,  GWPos(9,3)=>:a, GWPos(8,8)=>:b)
+    const LABELLED_STATES = Dict(GWPos(4,3) => :crash, GWPos(4,6)=>:crash,  GWPos(9,3)=>:a, GWPos(8,8)=>:b)
     
-    const LABELLED_STATES = Dict(GWPos(4,3) => :crash, GWPos(4,6)=>:crash)
+    # const LABELLED_STATES = Dict(GWPos(4,3) => :crash, GWPos(4,6)=>:crash)
 
     function POMDPModelChecking.labels(mdp::SimpleGridWorld, s, a)
         if haskey(LABELLED_STATES, s)
@@ -34,11 +34,11 @@ using Distributed
 
     include("mc_simulation.jl")
 
-end
+# end
 
-# prop = ltl"!crash U a"
+prop = ltl"!crash U a"
 # prop = ltl"!crash U a & !crash U b"
-prop = ltl"G !crash"
+# prop = ltl"G !crash"
 
 mdp = SimpleGridWorld(rewards=Dict(GWPos(9,3)=>10.0), terminate_from=Set([]))
 
@@ -50,12 +50,16 @@ pomdp = BlindGridWorld(exit=GWPos(-1,-1), simple_gw = mdp)
 @show length(observations(pomdp))
 
 
-sarsop = SARSOPSolver(precision=1e-2)
+# overwriding discount, to trigger SARSOP iterations
+POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 0.999
+sarsop = SARSOPSolver(precision=1e-2, timeout=30)
 solver = ModelCheckingSolver(solver=sarsop, property=prop, verbose=true)
 
-run(`rm model.pomdpx`)
+# run(`rm model.pomdpx`)
 policy = solve(solver, pomdp);
 
+# these are the bounds printed by the SARSOP output 
+# (unfortunately no way to get them programmatically with the current SARSOP implementation)
 UBOUND = 0.914258
 LBOUND = 0.900412
 
