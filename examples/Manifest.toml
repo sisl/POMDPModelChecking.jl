@@ -902,10 +902,10 @@ uuid = "cef570c6-3a94-5604-96b7-1a5e143043f2"
 version = "0.5.3"
 
 [[SARSOP_jll]]
-deps = ["Libdl", "Pkg"]
-git-tree-sha1 = "f67a49a301651bd3a53c335977aa15bb8ab4637b"
-uuid = "e478675d-f996-546e-baa1-da59d9de2062"
-version = "0.96.0+0"
+ deps = ["Libdl", "Pkg"]
+ git-tree-sha1 = "772dceda147691fd7c71c6baf7b22748233b0e63"
+ uuid = "e478675d-f996-546e-baa1-da59d9de2062"
+ version = "0.96.0+0"
 
 [[SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
