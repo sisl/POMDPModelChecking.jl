@@ -74,8 +74,6 @@ function POMDPs.reward(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState{S, 
     return 0.0
 end
 
-POMDPs.reward(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState{S, Q}, a::A) where {S, A, Q} = reward(mdp, s, a, s)
-
 function POMDPs.isterminal(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState{S, Q}) where {S, Q}
     if s ∈ mdp.accepting_states || s == mdp.sink_state
         return true
