@@ -1,18 +1,16 @@
 # POMDPModelChecking.jl
 
-[![Build Status](https://travis-ci.org/sisl/POMDPModelChecking.jl.svg?branch=master)](https://travis-ci.org/sisl/POMDPModelChecking.jl) [![Coverage Status](https://coveralls.io/repos/sisl/POMDPModelChecking.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/sisl/POMDPModelChecking.jl?branch=master)
+[![Build status](https://github.com/sisl/POMDPModelChecking.jl/workflows/CI/badge.svg)](https://github.com/sisl/POMDPModelChecking.jl/actions)
+[![CodeCov](https://codecov.io/gh/sisl/POMDPModelChecking.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/sisl/POMDPModelChecking.jl)
+
 
 This package provides support for performing verification and policy synthesis in POMDPs from LTL formulas. It relies on [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl) for expressing the model and [Spot.jl](https://github.com/sisl/Spot.jl) for manipulating LTL formulas. 
 
 If this package is useful to you, consider citing: M. Bouton, J. Tumova, and M. J. Kochenderfer, "Point-Based Methods for Model Checking in Partially Observable Markov Decision Processes," in *AAAI Conference on Artificial Intelligence (AAAI)*, 2020.
 
 ## Installation 
-
-This package is supported by JuliaPOMDP, it is recommended that you install the JuliaPOMDP registry first and then add the package as follows:
 ```julia
 using Pkg
-Pkg.add("POMDPs")
-Pkg.pkg"registry add https://github.com/JuliaPOMDP/Registry"
 Pkg.add("POMDPModelChecking")
 ```
 
