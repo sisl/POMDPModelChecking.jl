@@ -20,6 +20,7 @@ POMDPPolicies = "0.4"
 POMDPModelTools = "0.3"
 DiscreteValueIteration = "0.4"
 POMDPs = "0.9"
+Spot = "0.2"
 Parameters = "0.12"
 julia = "1.3"
 
