@@ -55,6 +55,10 @@ pomdp = RockSamplePOMDP{2}(map_size=(4,4),
 prop = ltl"F good_rock & G !bad_rock & F exit" 
 
 # Define the labeling function which tells which proposition hold true in a given state
+# For the rock sample problem, good_rock holds true if the robot is on a good rock location 
+# and take the action `sample` (a=5)
+# similarly, bad_rock holds true if the robot samples a bad rock
+# The exit proposition is true if the robot reached a terminal state
 function POMDPModelChecking.labels(pomdp::RockSamplePOMDP, s::RSState, a::Int64)
     if a == RockSample.BASIC_ACTIONS_DICT[:sample] && in(s.pos, pomdp.rocks_positions) # sample 
         rock_ind = findfirst(isequal(s.pos), pomdp.rocks_positions) # slow ?
