@@ -9,11 +9,13 @@ Internally, this solver requires a discrete state and discrete action model.
 # Fields
 - `property::SpotFormula`
 - `solver::Solver` any MDP/POMDP solver
+- `tolerance::Float64 = 1e-3`
 - `verbose::Bool = true`
 """
 @with_kw mutable struct ModelCheckingSolver <: Solver 
     property::SpotFormula = ltl"true" 
     solver::Solver = ValueIterationSolver() # can use any solver that returns a value function :o
+    tolerance::Float64 = 1e-3
     verbose::Bool = false
 end
 
@@ -31,10 +33,11 @@ function POMDPs.solve(solver::ModelCheckingSolver, problem::M) where M<:Union{MD
     automata = DeterministicRabinAutomata(solver.property)
     pmdp = nothing
     sink_state = ProductState(first(states(problem)), -1)
+    # build product with automata
     if isa(problem, POMDP)
-        pmdp = ProductPOMDP(problem, automata, sink_state)
+        pmdp = ProductPOMDP(problem, automata, sink_state, 1.0 - solver.tolerance)
     else
-        pmdp = ProductMDP(problem, automata, sink_state) # build product mdp x automata
+        pmdp = ProductMDP(problem, automata, sink_state, 1.0 - solver.tolerance) 
     end
     if isempty(pmdp.accepting_states)
         mec_time = @elapsed begin

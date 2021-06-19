@@ -5,3 +5,6 @@
 *.tra
 *.hoa
 .ipynb_checkpoints/
+.vscode/
+docs/build/
+Manifest.toml

@@ -85,7 +85,7 @@ POMDPs.isterminal(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s) = (s ∈ r.re
 POMDPs.initialstate_distribution(r::Union{ReachabilityMDP, ReachabilityPOMDP}) = initialstate_distribution(r.problem)
 POMDPs.initialstate(r::Union{ReachabilityMDP, ReachabilityPOMDP}, rng::AbstractRNG) = initialstate(r.problem, rng)
 
-POMDPs.reward(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s) = float(s ∈ r.reach)
-POMDPs.reward(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s, a) = reward(r, s)
-POMDPs.reward(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s, a, sp) = reward(r, sp)
-POMDPs.discount(r::Union{ReachabilityMDP, ReachabilityPOMDP}) = 1.0
+# POMDPs.reward(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s) = float(s ∈ r.reach)
+# POMDPs.reward(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s, a) = reward(r, s)
+POMDPs.reward(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s, a, sp) = float(sp ∈ r.reach)
+POMDPs.discount(r::Union{ReachabilityMDP, ReachabilityPOMDP}) = 1.0 - eps()

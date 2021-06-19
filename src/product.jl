@@ -13,26 +13,28 @@ function Base.hash(s::ProductState{S, Q}, h::UInt64) where {S, Q}
     return hash(s.s, hash(s.q, h))
 end
 
-mutable struct ProductMDP{S, A, Q <: Int, R <: AbstractAutomata} <: MDP{ProductState{S, Q}, A}
+mutable struct ProductMDP{S, A, Q <: Int, R <: AbstractAutomata, F<:AbstractFloat} <: MDP{ProductState{S, Q}, A}
     problem::MDP{S, A}
     automata::R
     accepting_states::Set{ProductState{S, Q}} 
     sink_state::ProductState{S, Q}
+    discount::F
 end
 
-function ProductMDP(mdp::MDP{S}, automata::AbstractAutomata, sink_state::ProductState{S,Q}) where {S,Q}
-    ProductMDP(mdp, automata, Set{ProductState{S, Q}}(), sink_state)
+function ProductMDP(mdp::MDP{S}, automata::AbstractAutomata, sink_state::ProductState{S,Q}, discount::AbstractFloat) where {S,Q}
+    ProductMDP(mdp, automata, Set{ProductState{S, Q}}(), sink_state, discount)
 end
 
-mutable struct ProductPOMDP{S, A, O, Q <: Int, R <: AbstractAutomata} <: POMDP{ProductState{S, Q}, A, O}
+mutable struct ProductPOMDP{S, A, O, Q <: Int, R <: AbstractAutomata, F<:AbstractFloat} <: POMDP{ProductState{S, Q}, A, O}
     problem::POMDP{S, A, O}
     automata::R
     accepting_states::Set{ProductState{S, Q}} 
     sink_state::ProductState{S, Q}
+    discount::F
 end
 
-function ProductPOMDP(pomdp::POMDP{S}, automata::AbstractAutomata, sink_state::ProductState{S,Q}) where {S,Q}
-    ProductPOMDP(pomdp, automata, Set{ProductState{S, Q}}(), sink_state)
+function ProductPOMDP(pomdp::POMDP{S}, automata::AbstractAutomata, sink_state::ProductState{S,Q}, discount::AbstractFloat) where {S,Q}
+    ProductPOMDP(pomdp, automata, Set{ProductState{S, Q}}(), sink_state, discount)
 end
 
 # should be implemented by the problem writer
@@ -74,7 +76,7 @@ function POMDPs.reward(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState{S, 
     return 0.0
 end
 
-POMDPs.reward(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState{S, Q}, a::A) where {S, A, Q} = reward(mdp, s, a, s)
+# POMDPs.reward(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState{S, Q}, a::A) where {S, A, Q} = reward(mdp, s, a, s)
 
 function POMDPs.isterminal(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState{S, Q}) where {S, Q}
     if s ∈ mdp.accepting_states || s == mdp.sink_state
@@ -83,7 +85,7 @@ function POMDPs.isterminal(mdp::Union{ProductMDP, ProductPOMDP}, s::ProductState
     return false
 end
 
-POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 1 - eps() # XXX needed for SARSOP 
+POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = problem.discount
 
 # in the product MDP, some transitions are "undefined" because the automata does not allow them.
 # the transitions does not necessarily sums up to one!
