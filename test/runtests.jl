@@ -59,7 +59,7 @@ end
     end
 
     dra = DeterministicRabinAutomata(ltl"(!c U b) & (!c U a)")
-    pmdp = ProductMDP(mdp, dra, Set{ProductState{GWPos, Int64}}(), ProductState(GWPos(1,1), -1))
+    pmdp = ProductMDP(mdp, dra, Set{ProductState{GWPos, Int64}}(), ProductState(GWPos(1,1), -1), 1.0)
     state_space = states(pmdp)
     action_space = actions(pmdp)
     @test isapprox(discount(pmdp), 1.0)
@@ -74,7 +74,7 @@ end
     pomdp = BlindGridWorld(size=(10,10), 
                            exit=GWPos(10,1), 
                            simple_gw=SimpleGridWorld(size=(10,10), terminate_from=Set([GWPos(9,3), GWPos(4,3)]), tprob=0.7))
-    ppomdp = ProductPOMDP(pomdp, dra, Set{ProductState{GWPos, Int64}}(), ProductState(GWPos(1,1), -1))
+    ppomdp = ProductPOMDP(pomdp, dra, Set{ProductState{GWPos, Int64}}(), ProductState(GWPos(1,1), -1), 1.0)
     state_space = states(ppomdp)
     action_space = actions(ppomdp)
     observation_space = observations(ppomdp)
