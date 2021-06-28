@@ -2,8 +2,8 @@
 
 [![Build status](https://github.com/sisl/POMDPModelChecking.jl/workflows/CI/badge.svg)](https://github.com/sisl/POMDPModelChecking.jl/actions)
 [![CodeCov](https://codecov.io/gh/sisl/POMDPModelChecking.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/sisl/POMDPModelChecking.jl)
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://sisl.github.io/Spot.jl/stable)
-[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://sisl.github.io/Spot.jl/dev)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://sisl.github.io/POMDPModelChecking.jl/stable)
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://sisl.github.io/POMDPModelChecking.jl/dev)
 
 
 This package provides support for performing verification and policy synthesis in POMDPs from LTL formulas. It relies on [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl) for expressing the model and [Spot.jl](https://github.com/sisl/Spot.jl) for manipulating LTL formulas. 
