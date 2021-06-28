@@ -76,7 +76,7 @@ end
 
 solver = ModelCheckingSolver(property=prop,
                              solver=SARSOPSolver(precision=1e-3, timeout=5), verbose=true)
-policy = solve(solver, pomdp)
+policy = solve(solver, pomdp);
 ```
 
 We can visualize the policy as follows:
@@ -98,7 +98,7 @@ product_hist = simulate(hr, policy.problem, policy, up, b0);
 hist = SimHistory([(s=s.s, a=a) for (s, a) in eachstep(product_hist, "(s,a)")], 
                   discount(pomdp), nothing, nothing)
 import Cairo
-makegif(pomdp, hist, filename="rocksample.gif", spec="(s,a)")
+makegif(pomdp, hist, filename="rocksample.gif", spec="(s,a)");
 ```
 
 ![](rocksample.gif)
@@ -152,5 +152,8 @@ product_hist = simulate(hr, policy.problem, policy, up, b0);
 # create a new history with the pomdp state and action, to be replayed and visualized
 hist = SimHistory([(s=s.s, a=a) for (s, a) in eachstep(product_hist, "(s,a)")], discount(pomdp), nothing, nothing)
 import Cairo
-makegif(pomdp, hist, filename="drone_surveillance.gif", spec="(s,a)")
+makegif(pomdp, hist, filename="drone_surveillance.gif", spec="(s,a)");
+
 ```
+
+![](drone_surveillance.gif)

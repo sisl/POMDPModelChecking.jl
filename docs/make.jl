@@ -8,11 +8,6 @@ makedocs(sitename="POMDPModelChecking.jl Documentation",
         "reachability.md",
         "model_checking.md",
         "references.md"
-        # "Examples" => [
-        #     "gridworld.md",
-        #     "drone_surveillance.md",
-        #     "rock_sample.md"
-        # ]
     ])
 
 deploydocs(
