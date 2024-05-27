@@ -1,6 +1,6 @@
 # POMDPModelChecking.jl
 
-[![CI](https://github.com/sisl/POMDPModelChecking.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/sisl/POMDPModelChecking.jl/actions/workflows/ci.yml)
+[![Build Status](https://github.com/sisl/POMDPModelChecking.jl/workflows/CI/badge.svg)](https://github.com/sisl/POMDPModelChecking.jl/actions)
 [![CodeCov](https://codecov.io/gh/sisl/POMDPModelChecking.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/sisl/POMDPModelChecking.jl)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://sisl.github.io/POMDPModelChecking.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://sisl.github.io/POMDPModelChecking.jl/dev)
