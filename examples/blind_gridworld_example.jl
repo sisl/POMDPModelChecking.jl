@@ -49,7 +49,7 @@ pomdp = BlindGridWorld(exit=GWPos(-1,-1), simple_gw = mdp)
 
 
 # overwriding discount, to trigger SARSOP iterations
-POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 0.999
+POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 0.99999
 sarsop = SARSOPSolver(precision=1e-2, timeout=30)
 solver = ModelCheckingSolver(solver=sarsop, property=prop, verbose=true)
 

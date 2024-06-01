@@ -2,7 +2,7 @@ using Statistics
 
 function sim(pomdp::POMDP, policy::ModelCheckingPolicy, i::Int64)
     up = DiscreteUpdater(pomdp)
-    b0 = initialize_belief(up, initialstate_distribution(pomdp))
+    b0 = initialize_belief(up, initialstate(pomdp))
     hr = HistoryRecorder(max_steps=50, rng=MersenneTwister(i))
     hist = simulate(hr, pomdp, policy, up, b0)
     return hist
