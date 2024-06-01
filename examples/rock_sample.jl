@@ -1,17 +1,15 @@
 using Revise
 using Random
 using POMDPs
+using POMDPTools
 using Spot
 using POMDPModelChecking
-using BeliefUpdaters
 using SARSOP
 using RockSample
-using POMDPSimulators
 import Cairo
 using POMDPGifs
 using ProgressMeter
 using Statistics
-using POMDPModelTools
 
 
 # pomdp = RockSamplePOMDP{2}(map_size=(4,4), 

@@ -5,15 +5,13 @@ using Distributed
 # @everywhere begin 
     using Random
     using POMDPs
+    using POMDPTools
     using Spot
     using POMDPModelChecking
     import Cairo
-    using POMDPModelTools
     using POMDPModels
-    using POMDPSimulators
     using POMDPGifs
     using ProgressMeter
-    using BeliefUpdaters
     using SARSOP
     using FileIO
     using JLD2

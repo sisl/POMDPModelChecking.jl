@@ -1,13 +1,11 @@
 using Revise
 using Random
 using POMDPs
+using POMDPTools
 using Spot
 using POMDPModelChecking
-using POMDPPolicies
-using BeliefUpdaters
 using SARSOP
 using DroneSurveillance
-using POMDPSimulators
 import Cairo
 using POMDPGifs
 using ProgressMeter
