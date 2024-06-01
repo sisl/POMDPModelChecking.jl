@@ -9,11 +9,10 @@ using LinearAlgebra
 using Random
 using POMDPs
 using POMDPModels
-using POMDPModelTools
+using POMDPTools
 using Compose
 using ColorSchemes
 using Parameters
-using BeliefUpdaters
 
 @with_kw struct BlindGridWorld <: POMDP{GWPos, Symbol, GWPos} #GWPos/Bool
     size::Tuple{Int64, Int64} = (10,10)
@@ -77,9 +76,6 @@ POMDPs.reward(pomdp::BlindGridWorld, s, a, sp) = reward(pomdp.simple_gw, s)
 POMDPs.reward(pomdp::BlindGridWorld, s, a) = reward(pomdp.simple_gw, s)
 POMDPs.discount(pomdp::BlindGridWorld) = 1.0
 
-## distributions 
-POMDPs.initialstate(pomdp::BlindGridWorld) = uniform_belief(pomdp)
-
 ## helpers
 
 function deterministic_belief(pomdp, s)
@@ -104,16 +100,12 @@ end
 
 ## Rendering 
 
-function POMDPModelTools.render(pomdp::BlindGridWorld, step::Union{NamedTuple, Dict})
-    return POMDPModelTools.render(pomdp.simple_gw, step)
-end
-
-function POMDPModels.tocolor(r::Float64, minr=0., maxr=1.0)
+function tocolor(r::Float64, minr=0., maxr=1.0)
     frac = (r-minr)/(maxr-minr)
     return get(ColorSchemes.redgreensplit, frac)
 end
 
-function POMDPModels.render(mdp::SimpleGridWorld, step::Union{NamedTuple,Dict};
+function POMDPModels.render(blindmdp::BlindGridWorld, step::Union{NamedTuple,Dict};
                 valuecolor = s -> reward(mdp, s),
                 value = nothing,
                 action = nothing,
@@ -121,14 +113,14 @@ function POMDPModels.render(mdp::SimpleGridWorld, step::Union{NamedTuple,Dict};
                 minr = 0.,
                 maxr = 1.0,
                )
-
+    mdp = blindmdp.simple_gw
     nx, ny = mdp.size
     cells = []
     vals = []
     acts = []
     landmarks = []
     for x in 1:nx, y in 1:ny
-        clr = valuecolor !== nothing ? POMDPModels.tocolor(valuecolor(GWPos(x,y)), minr, maxr) : RGB(1.0,1.0,1.0)
+        clr = valuecolor !== nothing ? tocolor(valuecolor(GWPos(x,y)), minr, maxr) : RGB(1.0,1.0,1.0)
         ctx = POMDPModels.cell_ctx((x,y), mdp.size)
         cell = compose(ctx, rectangle(), fill(clr))
         if value !== nothing
@@ -196,7 +188,8 @@ function actionarrow(ctx, act::Symbol)
     end
 end
 
-function highlight_goodstates(ctx, mdp::SimpleGridWorld, states::Vector{GWPos})
+function highlight_goodstates(ctx, blindmdp::BlindGridWorld, states::Vector{GWPos})
+    mdp = blindmdp.simple_gw
     goodstates = []
     for s in states
         x, y = s

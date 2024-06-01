@@ -74,11 +74,11 @@ function POMDPs.value(policy::ModelCheckingPolicy{P, M}, s::ProductState{S, Q}) 
     end
 end
 
-function POMDPPolicies.actionvalues(policy::ModelCheckingPolicy{P, M}, s) where {P <: Policy, M <: ProductMDP}
+function POMDPTools.actionvalues(policy::ModelCheckingPolicy{P, M}, s) where {P <: Policy, M <: ProductMDP}
     return actionvalues(policy, ProductState(s, policy.memory))
 end
 
-function POMDPPolicies.actionvalues(policy::ModelCheckingPolicy{P, M}, s::ProductState{S, Q}) where {P <: Policy, M <: ProductMDP, S, Q}
+function POMDPTools.actionvalues(policy::ModelCheckingPolicy{P, M}, s::ProductState{S, Q}) where {P <: Policy, M <: ProductMDP, S, Q}
     if s ∈ policy.problem.accepting_states
         return ones(length(actions(policy.problem)))
     else
@@ -93,8 +93,7 @@ end
 function update_memory!(policy::ModelCheckingPolicy, s, a)
     l = labels(policy.problem.problem, s, a)
     qp = nextstate(policy.problem.automata, policy.memory, l)
-    # println("current automata state: " , policy.memory, "  next state " , qp)
-    if qp != nothing 
+    if !isnothing(qp)
         policy.memory = qp
     end
 end
@@ -103,4 +102,4 @@ end
 
 POMDPs.action(policy::ModelCheckingPolicy{P, M}, b) where {P <: Policy, M <: ProductPOMDP} = action(policy.policy, b)
 POMDPs.value(policy::ModelCheckingPolicy{P, M}, b) where {P <: Policy, M <: ProductPOMDP} = value(policy.policy, b)
-POMDPPolicies.actionvalues(policy::ModelCheckingPolicy{P, M}, b) where {P <: Policy, M <: ProductPOMDP} = actionvalues(policy.policy, b)
+POMDPTools.actionvalues(policy::ModelCheckingPolicy{P, M}, b) where {P <: Policy, M <: ProductPOMDP} = actionvalues(policy.policy, b)

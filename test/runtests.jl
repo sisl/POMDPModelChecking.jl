@@ -1,11 +1,13 @@
 using POMDPModelChecking
 using POMDPs
+using POMDPTools
 using POMDPModels
 using DiscreteValueIteration
 using QMDP
-using POMDPTesting
 using Spot
 using Test
+
+include("blind_gridworld.jl")
 
 # test state indexing 
 function test_stateindexing(problem::Union{ProductMDP, ProductPOMDP})
@@ -31,7 +33,6 @@ end
 end
 
 @testset "POMDP reachability" begin 
-    include("blind_gridworld.jl")
     pomdp = BlindGridWorld(size=(10,10), 
                            exit=GWPos(10,1), 
                            simple_gw=SimpleGridWorld(size=(10,10), terminate_from=Set([GWPos(9,3), GWPos(4,3)]), tprob=0.7))
@@ -69,7 +70,6 @@ end
     @test test_stateindexing(pmdp)
     @test has_consistent_transition_distributions(pmdp) 
 
-    include("blind_gridworld.jl")
     POMDPModelChecking.labels(pomdp::BlindGridWorld, s, a) = labels(pomdp.simple_gw, s, a)
     pomdp = BlindGridWorld(size=(10,10), 
                            exit=GWPos(10,1), 
