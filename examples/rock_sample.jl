@@ -1,28 +1,26 @@
 using Revise
 using Random
 using POMDPs
+using POMDPTools
 using Spot
 using POMDPModelChecking
-using BeliefUpdaters
 using SARSOP
 using RockSample
-using POMDPSimulators
 import Cairo
 using POMDPGifs
 using ProgressMeter
 using Statistics
-using POMDPModelTools
 
 
 # pomdp = RockSamplePOMDP{2}(map_size=(4,4), 
 #                            rocks_positions=[(2,3), (3,1)])
 
 
-# pomdp = RockSamplePOMDP{3}(map_size=(5,5),
-#                             rocks_positions=[(2,3), (4,4), (4,2)])
+pomdp = RockSamplePOMDP{3}(map_size=(5,5),
+                            rocks_positions=[(2,3), (4,4), (4,2)])
 
-pomdp = RockSamplePOMDP{8}(map_size=(7,7), 
-                           rocks_positions=[(1,2), (2,8), (3,1), (3,5), (4,2), (4,5), (6,6), (7,4)])
+# pomdp = RockSamplePOMDP{8}(map_size=(7,7), 
+#                            rocks_positions=[(1,2), (2,8), (3,1), (3,5), (4,2), (4,5), (6,6), (7,4)])
 
 
 @show length(states(pomdp))
@@ -38,7 +36,7 @@ function POMDPModelChecking.labels(pomdp::RockSamplePOMDP, s::RSState, a::Int64)
             # return ()
             return (:good_rock,)
         else
-            # return (:bad_rock,)
+            return (:bad_rock,)
         end
     end
     if isterminal(pomdp, s)
@@ -58,7 +56,7 @@ POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 0.999
 
 # run(`rm model.pomdpx`)
 solver = ModelCheckingSolver(property = prop, 
-                      solver=SARSOPSolver(precision=1e-3), verbose=true);
+                      solver=SARSOPSolver(precision=1e-3, timeout=30), verbose=true);
 
 policy = solve(solver, pomdp);
 

@@ -2,8 +2,7 @@ module POMDPModelChecking
 
 # package code goes here
 using POMDPs
-using POMDPModelTools
-using POMDPPolicies
+using POMDPTools
 using LightGraphs
 using Parameters
 using Random

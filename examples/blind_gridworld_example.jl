@@ -5,15 +5,13 @@ using Distributed
 # @everywhere begin 
     using Random
     using POMDPs
+    using POMDPTools
     using Spot
     using POMDPModelChecking
     import Cairo
-    using POMDPModelTools
     using POMDPModels
-    using POMDPSimulators
     using POMDPGifs
     using ProgressMeter
-    using BeliefUpdaters
     using SARSOP
     using FileIO
     using JLD2
@@ -51,7 +49,7 @@ pomdp = BlindGridWorld(exit=GWPos(-1,-1), simple_gw = mdp)
 
 
 # overwriding discount, to trigger SARSOP iterations
-POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 0.999
+POMDPs.discount(problem::Union{ProductMDP, ProductPOMDP}) = 0.99999
 sarsop = SARSOPSolver(precision=1e-2, timeout=30)
 solver = ModelCheckingSolver(solver=sarsop, property=prop, verbose=true)
 

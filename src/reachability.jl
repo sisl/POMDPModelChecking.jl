@@ -48,7 +48,7 @@ function POMDPs.value(policy::ReachabilityPolicy, s)
         return value(policy.policy, s)
     end
 end
-function POMDPPolicies.actionvalues(policy::ReachabilityPolicy, s)
+function POMDPTools.actionvalues(policy::ReachabilityPolicy, s)
     if s ∈ policy.reach 
         return ones(length(actions(policy.problem)))
     else
@@ -82,10 +82,7 @@ POMDPs.obstype(r::ReachabilityPOMDP) = obstype(r.problem)
 POMDPs.transition(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s, a) = transition(r.problem, s, a)
 
 POMDPs.isterminal(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s) = (s ∈ r.reach) || (s ∈ r.avoid)
-POMDPs.initialstate_distribution(r::Union{ReachabilityMDP, ReachabilityPOMDP}) = initialstate_distribution(r.problem)
-POMDPs.initialstate(r::Union{ReachabilityMDP, ReachabilityPOMDP}, rng::AbstractRNG) = initialstate(r.problem, rng)
+POMDPs.initialstate(r::Union{ReachabilityMDP, ReachabilityPOMDP}) = initialstate(r.problem)
 
-# POMDPs.reward(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s) = float(s ∈ r.reach)
-# POMDPs.reward(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s, a) = reward(r, s)
 POMDPs.reward(r::Union{ReachabilityMDP, ReachabilityPOMDP}, s, a, sp) = float(sp ∈ r.reach)
 POMDPs.discount(r::Union{ReachabilityMDP, ReachabilityPOMDP}) = 1.0 - eps()
