@@ -1,7 +1,7 @@
 name = "POMDPModelChecking"
 uuid = "abefb91b-a28c-5ab9-9bd9-026e532d7b0e"
 repo = "https://github.com/JuliaPOMDP/POMDPModelChecking.jl"
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 DiscreteValueIteration = "4b033969-44f6-5439-a48b-c11fa3648068"
@@ -18,7 +18,7 @@ Spot = "f11abc24-ce50-11e8-2475-af6658d13f2b"
 DiscreteValueIteration = "0.4"
 Distributions = "0.17, 0.18, 0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25"
 LightGraphs = "1"
-POMDPTools = "0.1"
+POMDPTools = "0.1, 1"
 POMDPs = "0.9, 1"
 Parameters = "0.12"
 Spot = "0.2"
