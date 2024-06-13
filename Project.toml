@@ -1,7 +1,7 @@
 name = "POMDPModelChecking"
 uuid = "abefb91b-a28c-5ab9-9bd9-026e532d7b0e"
 repo = "https://github.com/JuliaPOMDP/POMDPModelChecking.jl"
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 DiscreteValueIteration = "4b033969-44f6-5439-a48b-c11fa3648068"
