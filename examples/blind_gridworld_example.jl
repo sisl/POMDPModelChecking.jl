@@ -76,7 +76,7 @@ PGFPlots.save("succ.pdf", ax)
 #=
 
 up = DiscreteUpdater(policy.problem)
-b0 = initialize_belief(up, initialstate_distribution(policy.problem))
+b0 = initialize_belief(up, initialstate_(policy.problem))
 @show value(policy, b0)
 
 policy.memory = 1
@@ -88,7 +88,7 @@ ctx1 |> PNG("gw.png")
 ## simulation 
 
 up = DiscreteUpdater(policy.problem)
-b0 = initialize_belief(up, initialstate_distribution(policy.problem))
+b0 = initialize_belief(up, initialstate(policy.problem))
 hr = HistoryRecorder(max_steps=50)
 hist = simulate(hr, policy.problem, policy, up, b0)
 prod_state_hist = hist.state_hist

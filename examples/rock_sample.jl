@@ -86,7 +86,7 @@ function sim(policy)
     fails = zeros(n_sim)
     @showprogress for i=1:n_sim
         up = DiscreteUpdater(policy.problem)
-        b0 = initialize_belief(up, initialstate_distribution(policy.problem))
+        b0 = initialize_belief(up, initialstate(policy.problem))
         hr = HistoryRecorder(max_steps=50)
         hist = simulate(hr, policy.problem, policy, up, b0)
         println("discounted reward ", discounted_reward(hist))
@@ -195,7 +195,7 @@ conditions = label_to_array.(llabels)
 
 rng = MersenneTwister(2)
 up = DiscreteUpdater(policy.problem)
-b0 = initialize_belief(up, initialstate_distribution(policy.problem))
+b0 = initialize_belief(up, initialstate(policy.problem))
 hr = HistoryRecorder(max_steps=50)
 hist = simulate(hr, policy.problem, policy, up, b0);
 prod_state_hist = hist.state_hist

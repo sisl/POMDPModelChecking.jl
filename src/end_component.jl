@@ -61,7 +61,7 @@ function mdp_to_graph(mdp::M) where {M <: Union{MDP, POMDP}}
 end
 
 # return a graph of the subMDP defined by ss
-function sub_mdp(mdp::M, state_indices::Vector{Int64}, state_space) where {S, M<:Union{MDP,POMDP}}
+function sub_mdp(mdp::M, state_indices::Vector{Int64}, state_space) where {M<:Union{MDP,POMDP}}
     g = DiGraph(length(state_indices))
     for (i, si) in enumerate(state_indices)
         s = state_space[si]

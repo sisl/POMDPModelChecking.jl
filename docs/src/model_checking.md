@@ -83,8 +83,7 @@ We can visualize the policy as follows:
 
 ```@example rocksample
 using Random
-using BeliefUpdaters
-using POMDPSimulators
+using POMDPTools
 using POMDPGifs
 
 # first simulate the product pomdp
@@ -138,14 +137,13 @@ policy = solve(solver, pomdp);
 
 ## Simulation and rendering 
 using Random
-using BeliefUpdaters
-using POMDPSimulators
+using POMDPTools
 using POMDPGifs
 
 # run the simulation in the product POMDP, policy.problem
 rng = MersenneTwister(3)
 up = DiscreteUpdater(policy.problem)
-b0 = initialize_belief(up, initialstate_distribution(policy.problem))
+b0 = initialize_belief(up, initialstate(policy.problem))
 hr = HistoryRecorder(max_steps=20, rng=rng)
 product_hist = simulate(hr, policy.problem, policy, up, b0);
 
