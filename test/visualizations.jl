@@ -1,6 +1,6 @@
 using Revise
 using POMDPs
-using POMDPModelTools
+using POMDPTools
 using Compose
 import Cairo
 

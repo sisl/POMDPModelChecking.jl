@@ -137,7 +137,7 @@ policy = solve(solver, pomdp);
 
 action(policy, b0)
 
-using POMDPModelTools
+using POMDPTools
 using Random
 using ParticleFilters
 
@@ -156,4 +156,3 @@ state_space = states(pmdp)
 transition(pmdp, state_space[4], 2)
 
 solve(sarsop, pmdp, pomdp_file_name="model.pomdpx")
-

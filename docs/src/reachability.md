@@ -33,7 +33,7 @@ value(policy, GWPos(1, 1))
 In the case of MDP problems, we can visualize the resulting probability of success over the whole state space
 
 ```@example reachability
-using POMDPModelTools
+using POMDPTools
 
 # overwrite the usual gridworld colorscale because here 
 # the value is a probability 
