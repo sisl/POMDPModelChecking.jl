@@ -40,7 +40,7 @@ automata = hoa2rabin("discrete.hoa")
 
 pmdp = ProductMDP(mdp, automata)
 
-b0 = initialstate_distribution(pmdp)
+b0 = initialstate(pmdp)
 
 
 # state_space = states(pmdp)

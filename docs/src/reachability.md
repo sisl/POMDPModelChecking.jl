@@ -75,7 +75,7 @@ solver = ReachabilitySolver(reach=Set([GWPos(10,1)]),
 
 policy = solve(solver, pomdp)
 
-b0 = initialstate_distribution(pomdp)
+b0 = initialstate(pomdp)
 value(policy, b0)
 ```
 

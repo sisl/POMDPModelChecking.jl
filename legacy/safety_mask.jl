@@ -130,7 +130,7 @@ end
 # function initial_probability(mdp::MDP, result::ModelCheckingResult)
 #     P = get_proba(mdp, result)
 #     p_init = 0.
-#     d0 = initialstate_distribution(mdp)
+#     d0 = initialstate(mdp)
 #     for (s, p) in weighted_iterator(d0)
 #         si = stateindex(mdp, s)
 #         p_init += p*P[si]

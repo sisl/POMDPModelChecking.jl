@@ -2,8 +2,7 @@ using Revise
 using POMDPModelChecking
 using POMDPs
 using POMDPModels
-using POMDPSimulators
-using BeliefUpdaters
+using POMDPTools
 using QMDP
 using SARSOP
 using POMCPOW
@@ -43,10 +42,10 @@ accepting_states!(pmdp)
 policy = solve(sarsop, pmdp)
 
 updater = DiscreteUpdater(pmdp)
-b0 = initialize_belief(up, initialstate_distribution(pmdp))
+b0 = initialize_belief(up, initialstate(pmdp))
 
 
-b0 = initialize_belief(up, initialstate_distribution(pmdp))
+b0 = initialize_belief(up, initialstate(pmdp))
 using Random
 rng = MersenneTwister(1)
 
@@ -89,7 +88,7 @@ policy = solve(sarsop, pomdp)
 
 hr = HistoryRecorder(max_steps = 20)
 up = DiscreteUpdater(policy.mdp)
-b0 = initialize_belief(up, initialstate_distribution(pmdp))
+b0 = initialize_belief(up, initialstate(pmdp))
 using Random
 rng = MersenneTwister(1)
 
@@ -143,7 +142,7 @@ using ParticleFilters
 
 rng = MersenneTwister(1)
 filter = SimpleParticleFilter(pomdp, LowVarianceResampler(1000))
-b0 = initialize_belief(filter, initialstate_distribution(pomdp))
+b0 = initialize_belief(filter, initialstate(pomdp))
 s0 = initialstate(pomdp, rng)
 hr = HistoryRecorder(max_steps=100)
 simulate(hr, pomdp, policy, filter, b0)
